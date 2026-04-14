@@ -1,0 +1,19 @@
+[package]
+name = "experiments"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[features]
+default = []
+theme-minimal = []
+theme-cyber = []
+all-themes = ["theme-minimal", "theme-cyber"]
+
+[dependencies]
+ratatui.workspace = true
+crossterm.workspace = true
+figlet-rs.workspace = true

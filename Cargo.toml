@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = [
+    "experiments",
+]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2021"
+rust-version = "1.85"
+authors = ["NullOrder", "Kumar Anirudha"]
+license = "MIT"
+repository = "https://github.com/nullorder/ono"
+
+[workspace.dependencies]
+ratatui = "0.30"
+crossterm = "0.29"
+figlet-rs = "1.0"

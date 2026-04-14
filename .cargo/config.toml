@@ -1,0 +1,2 @@
+[alias]
+experiments = "run -p experiments --release --bin"

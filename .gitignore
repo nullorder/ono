@@ -1,0 +1,68 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Node (future site/)
+node_modules/
+dist/
+.next/
+.astro/
+.turbo/
+.pnp.*
+
+# Python (future ono-py runtime)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# Internal / personal (not shipped)
+plan/
+scratch/
+notes/
+TODO.local.md
+NOTES.local.md
+
+# AI tool personal configs
+.claude/
+.aider*
+.cursor/
+.continue/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Logs
+*.log
+
+# direnv
+.direnv/
+.envrc
+
+# Coverage
+*.profraw
+*.profdata
+tarpaulin-report.*
+coverage/
+lcov.info
+
+# VHS intermediate artifacts (final renders committed explicitly)
+*.gif.tmp
