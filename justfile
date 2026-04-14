@@ -27,3 +27,16 @@ check:
 
 format:
     cargo fmt --all
+
+# Dry-run a publish: shows what would go to crates.io without uploading
+publish-check CRATE:
+    cargo publish -p {{ CRATE }} --dry-run
+
+# Publish a workspace crate to crates.io. Requires a clean tree on a tagged commit.
+publish CRATE:
+    @git diff --quiet || (echo "tree dirty — commit or stash first" && exit 1)
+    @git describe --exact-match --tags HEAD >/dev/null 2>&1 || (echo "HEAD is not on a tag" && exit 1)
+    cargo publish -p {{ CRATE }} --dry-run
+    @echo "dry-run ok. publishing {{ CRATE }} in 5s — ctrl-c to abort."
+    @sleep 5
+    cargo publish -p {{ CRATE }}

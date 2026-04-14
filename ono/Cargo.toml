@@ -1,0 +1,18 @@
+[package]
+name = "ono"
+version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Beautiful terminal UI components — copy-paste, framework-agnostic. Placeholder; the real CLI ships in v0.1.0."
+readme = "README.md"
+keywords = ["tui", "terminal", "ratatui", "components", "cli"]
+categories = ["command-line-utilities"]
+homepage = "https://github.com/nullorder/ono"
+documentation = "https://github.com/nullorder/ono"
+
+[[bin]]
+name = "ono"
+path = "src/main.rs"
