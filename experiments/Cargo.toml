@@ -9,9 +9,10 @@ publish = false
 
 [features]
 default = []
+theme-retro = []
 theme-minimal = []
-theme-cyber = []
-all-themes = ["theme-minimal", "theme-cyber"]
+theme-forest = []
+all-themes = ["theme-retro", "theme-minimal", "theme-forest"]
 
 [dependencies]
 ratatui.workspace = true

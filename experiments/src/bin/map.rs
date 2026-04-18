@@ -157,11 +157,13 @@ fn run(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, theme: Theme) -> i
     let palette = theme.palette();
 
     let outer_border = match theme {
-        #[cfg(feature = "theme-cyber")]
         Theme::Cyber => BorderType::Double,
+        #[cfg(feature = "theme-retro")]
+        Theme::Retro => BorderType::Rounded,
         #[cfg(feature = "theme-minimal")]
         Theme::Minimal => BorderType::Plain,
-        Theme::Retro => BorderType::Rounded,
+        #[cfg(feature = "theme-forest")]
+        Theme::Forest => BorderType::Rounded,
     };
 
     loop {

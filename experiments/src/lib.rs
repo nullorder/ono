@@ -2,11 +2,13 @@ use ratatui::style::Color;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Theme {
+    Cyber,
+    #[cfg(feature = "theme-retro")]
     Retro,
     #[cfg(feature = "theme-minimal")]
     Minimal,
-    #[cfg(feature = "theme-cyber")]
-    Cyber,
+    #[cfg(feature = "theme-forest")]
+    Forest,
 }
 
 pub struct Palette {
@@ -38,19 +40,22 @@ pub struct Knobs {
     pub gauge_unicode: bool,
 }
 
+pub const SPINNER_CYBER: &[char] = &['╋', '═', '║', '╂', '╀', '┼', '╳', '╱'];
+#[cfg(feature = "theme-retro")]
 pub const SPINNER_BRAILLE: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 #[cfg(feature = "theme-minimal")]
 pub const SPINNER_MINIMAL: &[char] = &['·', '◦', '○', '◦'];
-#[cfg(feature = "theme-cyber")]
-pub const SPINNER_CYBER: &[char] = &['╋', '═', '║', '╂', '╀', '┼', '╳', '╱'];
+#[cfg(feature = "theme-forest")]
+pub const SPINNER_FOREST: &[char] = &['◐', '◓', '◑', '◒'];
 
 pub const GLITCH_CHARS: &[char] = &['░', '▒', '▓', '█', '▚', '▞', '╳', '¦', '§', '∎', '◈'];
 
+#[cfg(feature = "theme-retro")]
 const PALETTE_RETRO: Palette = Palette {
     bg: Color::Rgb(0x0A, 0x07, 0x00),
     surface: Color::Rgb(0x0A, 0x07, 0x00),
     border: Color::Rgb(0x3A, 0x2A, 0x00),
-    dim: Color::Rgb(0x5A, 0x40, 0x00),
+    dim: Color::Rgb(0x8E, 0x6A, 0x14),
     primary: Color::Rgb(0xE8, 0x9A, 0x00),
     bright: Color::Rgb(0xFF, 0xB8, 0x1C),
     accent: Color::Rgb(0xE0, 0x5A, 0x00),
@@ -63,7 +68,7 @@ const PALETTE_MINIMAL: Palette = Palette {
     bg: Color::Rgb(0x0D, 0x0D, 0x0F),
     surface: Color::Rgb(0x1A, 0x1A, 0x1D),
     border: Color::Rgb(0x2A, 0x2A, 0x2F),
-    dim: Color::Rgb(0x55, 0x55, 0x5D),
+    dim: Color::Rgb(0x88, 0x88, 0x92),
     primary: Color::Rgb(0xB8, 0xB8, 0xC0),
     bright: Color::Rgb(0xD8, 0xD8, 0xDE),
     accent: Color::Rgb(0x6B, 0x4A, 0xE8),
@@ -71,12 +76,11 @@ const PALETTE_MINIMAL: Palette = Palette {
     warn: Color::Rgb(0xD6, 0x88, 0x0A),
 };
 
-#[cfg(feature = "theme-cyber")]
 const PALETTE_CYBER: Palette = Palette {
     bg: Color::Rgb(0x05, 0x05, 0x0A),
     surface: Color::Rgb(0x0F, 0x0A, 0x1F),
     border: Color::Rgb(0x2A, 0x1F, 0x4A),
-    dim: Color::Rgb(0x4A, 0x3A, 0x6A),
+    dim: Color::Rgb(0x7A, 0x6A, 0xA4),
     primary: Color::Rgb(0xB8, 0xB8, 0xD8),
     bright: Color::Rgb(0xE8, 0x1E, 0x74),
     accent: Color::Rgb(0x00, 0xC8, 0xE0),
@@ -84,6 +88,20 @@ const PALETTE_CYBER: Palette = Palette {
     warn: Color::Rgb(0xE0, 0x00, 0x2A),
 };
 
+#[cfg(feature = "theme-forest")]
+const PALETTE_FOREST: Palette = Palette {
+    bg: Color::Rgb(0x05, 0x0B, 0x07),
+    surface: Color::Rgb(0x0C, 0x16, 0x0F),
+    border: Color::Rgb(0x1F, 0x34, 0x22),
+    dim: Color::Rgb(0x62, 0x88, 0x64),
+    primary: Color::Rgb(0x6F, 0xA8, 0x5E),
+    bright: Color::Rgb(0xB6, 0xE0, 0x7A),
+    accent: Color::Rgb(0xD8, 0xA7, 0x3A),
+    accent2: Color::Rgb(0x3E, 0x8A, 0x5A),
+    warn: Color::Rgb(0xC8, 0x6A, 0x1E),
+};
+
+#[cfg(feature = "theme-retro")]
 const KNOBS_RETRO: Knobs = Knobs {
     gradient_period_secs: 5.0,
     pulse_amplitude: 0.05,
@@ -119,7 +137,6 @@ const KNOBS_MINIMAL: Knobs = Knobs {
     gauge_unicode: false,
 };
 
-#[cfg(feature = "theme-cyber")]
 const KNOBS_CYBER: Knobs = Knobs {
     gradient_period_secs: 1.8,
     pulse_amplitude: 0.10,
@@ -137,24 +154,46 @@ const KNOBS_CYBER: Knobs = Knobs {
     gauge_unicode: true,
 };
 
+#[cfg(feature = "theme-forest")]
+const KNOBS_FOREST: Knobs = Knobs {
+    gradient_period_secs: 7.0,
+    pulse_amplitude: 0.04,
+    scanline: false,
+    scanline_speed_rows_per_sec: 0.0,
+    scanline_boost: 1.0,
+    glitch: false,
+    glitch_interval_min: 0.0,
+    glitch_interval_max: 0.0,
+    glitch_duration_ms: 0,
+    idle_flicker: true,
+    reveal_ms_per_char: 28,
+    spinner: SPINNER_FOREST,
+    cursor_blink_hz: 0.9,
+    gauge_unicode: true,
+};
+
 impl Theme {
     pub fn palette(self) -> &'static Palette {
         match self {
+            Theme::Cyber => &PALETTE_CYBER,
+            #[cfg(feature = "theme-retro")]
             Theme::Retro => &PALETTE_RETRO,
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => &PALETTE_MINIMAL,
-            #[cfg(feature = "theme-cyber")]
-            Theme::Cyber => &PALETTE_CYBER,
+            #[cfg(feature = "theme-forest")]
+            Theme::Forest => &PALETTE_FOREST,
         }
     }
 
     pub fn knobs(self) -> &'static Knobs {
         match self {
+            Theme::Cyber => &KNOBS_CYBER,
+            #[cfg(feature = "theme-retro")]
             Theme::Retro => &KNOBS_RETRO,
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => &KNOBS_MINIMAL,
-            #[cfg(feature = "theme-cyber")]
-            Theme::Cyber => &KNOBS_CYBER,
+            #[cfg(feature = "theme-forest")]
+            Theme::Forest => &KNOBS_FOREST,
         }
     }
 
@@ -162,6 +201,8 @@ impl Theme {
         let p = phase.rem_euclid(1.0);
         let tri = if p < 0.5 { p * 2.0 } else { 2.0 - p * 2.0 };
         match self {
+            Theme::Cyber => lerp_rgb((0xFF, 0x2E, 0x88), (0x00, 0xF0, 0xFF), tri),
+            #[cfg(feature = "theme-retro")]
             Theme::Retro => {
                 if tri < 0.5 {
                     lerp_rgb((0xFF, 0x6A, 0x00), (0xFF, 0xB0, 0x00), tri * 2.0)
@@ -171,8 +212,14 @@ impl Theme {
             }
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => lerp_rgb((0xE8, 0xE8, 0xEC), (0x7C, 0x5C, 0xFF), tri * 0.18),
-            #[cfg(feature = "theme-cyber")]
-            Theme::Cyber => lerp_rgb((0xFF, 0x2E, 0x88), (0x00, 0xF0, 0xFF), tri),
+            #[cfg(feature = "theme-forest")]
+            Theme::Forest => {
+                if tri < 0.5 {
+                    lerp_rgb((0x3E, 0x8A, 0x5A), (0x6F, 0xA8, 0x5E), tri * 2.0)
+                } else {
+                    lerp_rgb((0x6F, 0xA8, 0x5E), (0xB6, 0xE0, 0x7A), (tri - 0.5) * 2.0)
+                }
+            }
         }
     }
 
@@ -182,32 +229,36 @@ impl Theme {
             if a == "--theme" {
                 if let Some(v) = args.next() {
                     return match v.as_str() {
+                        "cyber" => Theme::Cyber,
+                        #[cfg(feature = "theme-retro")]
                         "retro" => Theme::Retro,
                         #[cfg(feature = "theme-minimal")]
                         "minimal" => Theme::Minimal,
-                        #[cfg(feature = "theme-cyber")]
-                        "cyber" => Theme::Cyber,
+                        #[cfg(feature = "theme-forest")]
+                        "forest" => Theme::Forest,
                         other => {
                             eprintln!(
-                                "theme {:?} not enabled in this build. rebuild with `--features theme-{}`. using retro.",
+                                "theme {:?} not enabled in this build. rebuild with `--features theme-{}`. using cyber.",
                                 other, other
                             );
-                            Theme::Retro
+                            Theme::Cyber
                         }
                     };
                 }
             }
         }
-        Theme::Retro
+        Theme::Cyber
     }
 
     pub fn name(self) -> &'static str {
         match self {
+            Theme::Cyber => "cyber",
+            #[cfg(feature = "theme-retro")]
             Theme::Retro => "retro",
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => "minimal",
-            #[cfg(feature = "theme-cyber")]
-            Theme::Cyber => "cyber",
+            #[cfg(feature = "theme-forest")]
+            Theme::Forest => "forest",
         }
     }
 }

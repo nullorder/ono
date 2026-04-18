@@ -28,7 +28,7 @@ The `plan/` directory is gitignored — public contributors don't see it, but ag
 ono/
 ├── Cargo.toml              workspace; rust-version = 1.85
 ├── experiments/            Phase 0 prototype crate
-│   ├── Cargo.toml          features: theme-minimal, theme-cyber, all-themes
+│   ├── Cargo.toml          features: theme-retro, theme-minimal, theme-forest, all-themes
 │   ├── src/lib.rs          Theme + Palette + Knobs (the theming primitive)
 │   └── src/bin/            one binary per prototype
 ├── plan/                   internal planning (gitignored)
@@ -44,8 +44,8 @@ The `experiments/` crate is **deliberately ephemeral** — it gets deleted when 
 ## Commands
 
 ```sh
-just experiment <name>          # run a prototype in retro (default)
-just theme <name> <theme>       # run in retro|minimal|cyber
+just experiment <name>          # run a prototype in cyber (default)
+just theme <name> <theme>       # run in cyber|retro|minimal|forest
 just experiments                # list available
 just all-themes                 # build with every theme enabled
 just check                      # cargo check --workspace --features all-themes
@@ -54,7 +54,7 @@ just format                     # cargo fmt --all
 cargo experiments <name>        # raw alias, same as `just experiment`
 ```
 
-Always `just check` (or build with `--features all-themes`) before declaring a change done — the default build only compiles the retro theme, so theme-gated regressions can hide.
+Always `just check` (or build with `--features all-themes`) before declaring a change done — the default build only compiles the cyber theme, so theme-gated regressions can hide.
 
 ## Coding rules
 
@@ -65,7 +65,7 @@ These are non-negotiable. Reviewers will reject code that violates them.
 3. **No backwards-compat shims for things you're removing.** Just delete.
 4. **No new abstractions beyond what the task requires.** Three similar lines beats a premature trait.
 5. **No hardcoded hex colors in component code.** Always go through `theme.palette().<role>`. Hardcoded hex in `experiments/src/lib.rs` is fine (that's where palettes live); anywhere else is a bug.
-6. **No branching on theme identity for visual logic.** `if theme == Theme::Retro` is a code smell. Branch on knobs or palette roles: `if theme.knobs().scanline { ... }`.
+6. **No branching on theme identity for visual logic.** `if theme == Theme::Cyber` is a code smell. Branch on knobs or palette roles: `if theme.knobs().scanline { ... }`.
 7. **No `unwrap()` on user-reachable code paths.** OK in `main` setup and prototype glue; not OK in render loops.
 8. **Match Rust idioms.** snake_case for fns/vars, PascalCase for types, SCREAMING for consts. `cargo fmt` before committing.
 9. **Concrete types over generics** when only one concrete type is used. Example: `Terminal<CrosstermBackend<io::Stdout>>` not `Terminal<B: Backend>`.
@@ -74,7 +74,7 @@ These are non-negotiable. Reviewers will reject code that violates them.
 
 See `plan/theming.md` for the full decision. Quick reference:
 
-- **Retro is canonical.** It's the only theme enabled in default builds. Minimal and Cyber exist as feature-gated dev tools.
+- **Cyber is canonical.** It's the only theme enabled in default builds. Retro, Minimal, and Forest exist as feature-gated dev tools.
 - **Adding a theme** requires: a new variant in `Theme`, a `Palette` constant, a `Knobs` constant, a `gradient()` arm, a `name()` arm — all behind `#[cfg(feature = "theme-<name>")]`. Update `plan/theming.md`.
 - **Every theme must fill all 9 Palette roles and all Knob fields.** No `Option<Color>`. No per-component fallbacks.
 - **Themes are not advertised** as a user feature in v1.0. Public messaging stays single-theme.
@@ -104,7 +104,7 @@ From `plan/ono-plan.md` — these are hard rules to enforce against future selve
 1. Create `experiments/src/bin/<name>.rs`.
 2. Use `Theme::parse_from_args()` to read `--theme`.
 3. Pull colors from `theme.palette()`, behavior from `theme.knobs()`.
-4. Conform to retro for default appearance; verify minimal + cyber don't crash with `just all-themes`.
+4. Conform to cyber for default appearance; verify retro + minimal + forest don't crash with `just all-themes`.
 5. No new shared abstractions in `lib.rs` unless every existing experiment needs them.
 
 **A new theme (rare — see `plan/theming.md` first):**

@@ -1,15 +1,15 @@
 default:
     @just --list
 
-# Run an experiment in the default (retro) theme
+# Run an experiment in the default (cyber) theme
 experiment NAME:
     cargo experiments {{ NAME }}
 
-# Run an experiment in a specific theme (retro|minimal|cyber)
-# Non-retro themes are gated behind cargo features.
+# Run an experiment in a specific theme (cyber|retro|minimal|forest)
+# Non-cyber themes are gated behind cargo features.
 theme NAME THEME:
-    @if [ "{{ THEME }}" = "retro" ]; then \
-        cargo run -p experiments --release --bin {{ NAME }} -- --theme retro; \
+    @if [ "{{ THEME }}" = "cyber" ]; then \
+        cargo run -p experiments --release --bin {{ NAME }} -- --theme cyber; \
     else \
         cargo run -p experiments --release --features theme-{{ THEME }} --bin {{ NAME }} -- --theme {{ THEME }}; \
     fi
