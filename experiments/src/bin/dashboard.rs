@@ -366,13 +366,13 @@ fn run(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, theme: Theme) -> i
     let knobs = theme.knobs();
 
     let outer_border = match theme {
-        Theme::Cyber => BorderType::Double,
+        Theme::Forest => BorderType::Rounded,
         #[cfg(feature = "theme-retro")]
         Theme::Retro => BorderType::Rounded,
         #[cfg(feature = "theme-minimal")]
         Theme::Minimal => BorderType::Plain,
-        #[cfg(feature = "theme-forest")]
-        Theme::Forest => BorderType::Rounded,
+        #[cfg(feature = "theme-cyber")]
+        Theme::Cyber => BorderType::Double,
     };
 
     loop {
@@ -415,7 +415,7 @@ fn run(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, theme: Theme) -> i
                 )
                 .title_bottom(
                     Line::from(vec![Span::styled(
-                        format!(" {} · v0.0.4 ", clock),
+                        format!(" {} ", clock),
                         fg_bg(palette.dim, palette.bg),
                     )])
                     .alignment(Alignment::Right),

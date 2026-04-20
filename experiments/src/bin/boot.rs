@@ -15,7 +15,7 @@ use experiments::Theme;
 
 const FRAME_TARGET: Duration = Duration::from_millis(33);
 const IDLE_PAUSE_MS: u64 = 3200;
-const HEADER: &str = "› booting ono v0.0.4";
+const HEADER: &str = "› booting ono";
 const FOOTER: &str = "experiment · q to quit";
 
 struct Step {

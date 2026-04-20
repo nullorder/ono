@@ -6,7 +6,7 @@ fn main() {
     println!("  ono v{}", env!("CARGO_PKG_VERSION"));
     println!("  {}", PITCH);
     println!();
-    println!("  Status: placeholder. The real CLI ships in v0.1.0.");
+    println!("  Status: placeholder. The real CLI is in active development.");
     println!("  Follow along: {}", REPO);
     println!();
 }

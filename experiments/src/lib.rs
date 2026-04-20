@@ -2,13 +2,13 @@ use ratatui::style::Color;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Theme {
-    Cyber,
+    Forest,
     #[cfg(feature = "theme-retro")]
     Retro,
     #[cfg(feature = "theme-minimal")]
     Minimal,
-    #[cfg(feature = "theme-forest")]
-    Forest,
+    #[cfg(feature = "theme-cyber")]
+    Cyber,
 }
 
 pub struct Palette {
@@ -40,13 +40,13 @@ pub struct Knobs {
     pub gauge_unicode: bool,
 }
 
-pub const SPINNER_CYBER: &[char] = &['╋', '═', '║', '╂', '╀', '┼', '╳', '╱'];
+pub const SPINNER_FOREST: &[char] = &['◐', '◓', '◑', '◒'];
 #[cfg(feature = "theme-retro")]
 pub const SPINNER_BRAILLE: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 #[cfg(feature = "theme-minimal")]
 pub const SPINNER_MINIMAL: &[char] = &['·', '◦', '○', '◦'];
-#[cfg(feature = "theme-forest")]
-pub const SPINNER_FOREST: &[char] = &['◐', '◓', '◑', '◒'];
+#[cfg(feature = "theme-cyber")]
+pub const SPINNER_CYBER: &[char] = &['╋', '═', '║', '╂', '╀', '┼', '╳', '╱'];
 
 pub const GLITCH_CHARS: &[char] = &['░', '▒', '▓', '█', '▚', '▞', '╳', '¦', '§', '∎', '◈'];
 
@@ -76,6 +76,7 @@ const PALETTE_MINIMAL: Palette = Palette {
     warn: Color::Rgb(0xD6, 0x88, 0x0A),
 };
 
+#[cfg(feature = "theme-cyber")]
 const PALETTE_CYBER: Palette = Palette {
     bg: Color::Rgb(0x05, 0x05, 0x0A),
     surface: Color::Rgb(0x0F, 0x0A, 0x1F),
@@ -88,7 +89,6 @@ const PALETTE_CYBER: Palette = Palette {
     warn: Color::Rgb(0xE0, 0x00, 0x2A),
 };
 
-#[cfg(feature = "theme-forest")]
 const PALETTE_FOREST: Palette = Palette {
     bg: Color::Rgb(0x05, 0x0B, 0x07),
     surface: Color::Rgb(0x0C, 0x16, 0x0F),
@@ -137,6 +137,7 @@ const KNOBS_MINIMAL: Knobs = Knobs {
     gauge_unicode: false,
 };
 
+#[cfg(feature = "theme-cyber")]
 const KNOBS_CYBER: Knobs = Knobs {
     gradient_period_secs: 1.8,
     pulse_amplitude: 0.10,
@@ -154,7 +155,6 @@ const KNOBS_CYBER: Knobs = Knobs {
     gauge_unicode: true,
 };
 
-#[cfg(feature = "theme-forest")]
 const KNOBS_FOREST: Knobs = Knobs {
     gradient_period_secs: 7.0,
     pulse_amplitude: 0.04,
@@ -175,25 +175,25 @@ const KNOBS_FOREST: Knobs = Knobs {
 impl Theme {
     pub fn palette(self) -> &'static Palette {
         match self {
-            Theme::Cyber => &PALETTE_CYBER,
+            Theme::Forest => &PALETTE_FOREST,
             #[cfg(feature = "theme-retro")]
             Theme::Retro => &PALETTE_RETRO,
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => &PALETTE_MINIMAL,
-            #[cfg(feature = "theme-forest")]
-            Theme::Forest => &PALETTE_FOREST,
+            #[cfg(feature = "theme-cyber")]
+            Theme::Cyber => &PALETTE_CYBER,
         }
     }
 
     pub fn knobs(self) -> &'static Knobs {
         match self {
-            Theme::Cyber => &KNOBS_CYBER,
+            Theme::Forest => &KNOBS_FOREST,
             #[cfg(feature = "theme-retro")]
             Theme::Retro => &KNOBS_RETRO,
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => &KNOBS_MINIMAL,
-            #[cfg(feature = "theme-forest")]
-            Theme::Forest => &KNOBS_FOREST,
+            #[cfg(feature = "theme-cyber")]
+            Theme::Cyber => &KNOBS_CYBER,
         }
     }
 
@@ -201,7 +201,13 @@ impl Theme {
         let p = phase.rem_euclid(1.0);
         let tri = if p < 0.5 { p * 2.0 } else { 2.0 - p * 2.0 };
         match self {
-            Theme::Cyber => lerp_rgb((0xFF, 0x2E, 0x88), (0x00, 0xF0, 0xFF), tri),
+            Theme::Forest => {
+                if tri < 0.5 {
+                    lerp_rgb((0x3E, 0x8A, 0x5A), (0x6F, 0xA8, 0x5E), tri * 2.0)
+                } else {
+                    lerp_rgb((0x6F, 0xA8, 0x5E), (0xB6, 0xE0, 0x7A), (tri - 0.5) * 2.0)
+                }
+            }
             #[cfg(feature = "theme-retro")]
             Theme::Retro => {
                 if tri < 0.5 {
@@ -212,14 +218,8 @@ impl Theme {
             }
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => lerp_rgb((0xE8, 0xE8, 0xEC), (0x7C, 0x5C, 0xFF), tri * 0.18),
-            #[cfg(feature = "theme-forest")]
-            Theme::Forest => {
-                if tri < 0.5 {
-                    lerp_rgb((0x3E, 0x8A, 0x5A), (0x6F, 0xA8, 0x5E), tri * 2.0)
-                } else {
-                    lerp_rgb((0x6F, 0xA8, 0x5E), (0xB6, 0xE0, 0x7A), (tri - 0.5) * 2.0)
-                }
-            }
+            #[cfg(feature = "theme-cyber")]
+            Theme::Cyber => lerp_rgb((0xFF, 0x2E, 0x88), (0x00, 0xF0, 0xFF), tri),
         }
     }
 
@@ -229,36 +229,36 @@ impl Theme {
             if a == "--theme" {
                 if let Some(v) = args.next() {
                     return match v.as_str() {
-                        "cyber" => Theme::Cyber,
+                        "forest" => Theme::Forest,
                         #[cfg(feature = "theme-retro")]
                         "retro" => Theme::Retro,
                         #[cfg(feature = "theme-minimal")]
                         "minimal" => Theme::Minimal,
-                        #[cfg(feature = "theme-forest")]
-                        "forest" => Theme::Forest,
+                        #[cfg(feature = "theme-cyber")]
+                        "cyber" => Theme::Cyber,
                         other => {
                             eprintln!(
-                                "theme {:?} not enabled in this build. rebuild with `--features theme-{}`. using cyber.",
+                                "theme {:?} not enabled in this build. rebuild with `--features theme-{}`. using forest.",
                                 other, other
                             );
-                            Theme::Cyber
+                            Theme::Forest
                         }
                     };
                 }
             }
         }
-        Theme::Cyber
+        Theme::Forest
     }
 
     pub fn name(self) -> &'static str {
         match self {
-            Theme::Cyber => "cyber",
+            Theme::Forest => "forest",
             #[cfg(feature = "theme-retro")]
             Theme::Retro => "retro",
             #[cfg(feature = "theme-minimal")]
             Theme::Minimal => "minimal",
-            #[cfg(feature = "theme-forest")]
-            Theme::Forest => "forest",
+            #[cfg(feature = "theme-cyber")]
+            Theme::Cyber => "cyber",
         }
     }
 }

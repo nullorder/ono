@@ -6,46 +6,67 @@ Working notes for AI coding agents (Claude Code, Cursor, Pi, etc.) contributing 
 
 A framework-agnostic registry of beautiful, copy-paste terminal UI components. Think shadcn / Aceternity, but for TUIs. Users run a CLI, pick a component, get idiomatic source dropped into their project — code they own, not a runtime dependency.
 
-**Status:** Phase 0 (prototype validation). No public release yet.
+**Status:** early work in progress. No public CLI yet.
 
 ## Authoritative context
 
-If anything below conflicts with these files, **the files win**:
+Internal planning — goals, roadmap, sprint tasks, aesthetic decisions, theming rules — lives under `plan/`. That directory is gitignored (public contributors don't see it, but agents working on this repo do). If anything below conflicts with a file in `plan/`, **the file in `plan/` wins**.
 
-| File | Purpose |
-|---|---|
-| `plan/ono-plan.md` | The original brief. Source of truth for goals, phases, hard rules. |
-| `plan/roadmap.md` | Version-by-version plan. Where we are, what ships when. |
-| `plan/aesthetic-decision.md` | Locked palette + animation parameters. Do not deviate. |
-| `plan/theming.md` | Theme system rules + roadmap position. |
-| `plan/v0.0.4-tasks.md` | Current sprint task list. |
+When in doubt about what to build next, or why a decision was made, read `plan/`. Start with `plan/ono-plan.md`.
 
-The `plan/` directory is gitignored — public contributors don't see it, but agents working on the repo do. Treat it as load-bearing.
+## Model
+
+Two top-level concerns in the shipped crate (`ono/src/`):
+
+- **Components** — what the user copies. Two kinds:
+  - **Elements** (`ono/src/elements/`) — atomic: `box`, `progress`, `spinner`, `percentage`, `sparkline`, `typewriter`. Cannot compose other components.
+  - **Components** (`ono/src/components/`) — composite: `splash`, `boot`, `dashboard`, `statusbar`, `map`. Compose elements and/or other components.
+- **Themes** (`ono/src/theme/`) — `Theme` enum + `Palette` (9 semantic roles) + `Knobs` (animation/behavior). Components refer to palette roles by name, never hex.
+
+**Composition rule:** components compose elements and other components. Elements are atomic. Prevents cycles.
+
+**Spec files** (`specs/`) are the source of truth for each component's params, defaults, composition, and class→role mapping. Consumed by the engine for preview and, later, by codegen.
 
 ## Repo layout
 
 ```
 ono/
 ├── Cargo.toml              workspace; rust-version = 1.85
-├── experiments/            Phase 0 prototype crate
-│   ├── Cargo.toml          features: theme-retro, theme-minimal, theme-forest, all-themes
-│   ├── src/lib.rs          Theme + Palette + Knobs (the theming primitive)
-│   └── src/bin/            one binary per prototype
-├── plan/                   internal planning (gitignored)
+├── ono/                    the shipped crate (CLI + engine + component source)
+│   ├── Cargo.toml          features: theme-retro, theme-minimal, theme-cyber, all-themes
+│   └── src/
+│       ├── main.rs         CLI entry (list, add, preview)
+│       ├── theme/          Theme + Palette + Knobs; forest always-built, others feature-gated
+│       ├── elements/       atomic components (Ratatui source)
+│       ├── components/     composite components (Ratatui source)
+│       ├── spec/           TOML parse + composition resolver
+│       └── cli/            subcommand implementations
+├── specs/
+│   ├── elements/*.toml
+│   └── components/*.toml
+├── experiments/            prototype crate — scratchpad for new work before it graduates into ono/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── lib.rs          original Theme primitives (graduate into ono/src/theme/)
+│       └── bin/            one binary per prototype
+├── examples/
+│   └── ratatui-demo/       example project consuming several components
+├── site/                   Astro showcase
+├── plan/                   internal planning (gitignored) — follow along there
 ├── .cargo/config.toml      `cargo experiments <name>` alias
 ├── justfile                dev recipes
-├── README.md               public stub
+├── README.md               public
 ├── LICENSE                 MIT, NullOrder
 └── AGENTS.md               this file
 ```
 
-The `experiments/` crate is **deliberately ephemeral** — it gets deleted when Phase 1 (v0.1.0) starts and the real engine + spec system replaces it. Don't refactor experiments into permanent infrastructure.
+The `experiments/` crate stays in the repo as a scratchpad — new explorations land there before graduating into `ono/`. Don't delete it. Don't refactor it into permanent infrastructure either.
 
 ## Commands
 
 ```sh
-just experiment <name>          # run a prototype in cyber (default)
-just theme <name> <theme>       # run in cyber|retro|minimal|forest
+just experiment <name>          # run a prototype in forest (default)
+just theme <name> <theme>       # run in forest|retro|minimal|cyber
 just experiments                # list available
 just all-themes                 # build with every theme enabled
 just check                      # cargo check --workspace --features all-themes
@@ -54,7 +75,7 @@ just format                     # cargo fmt --all
 cargo experiments <name>        # raw alias, same as `just experiment`
 ```
 
-Always `just check` (or build with `--features all-themes`) before declaring a change done — the default build only compiles the cyber theme, so theme-gated regressions can hide.
+Always `just check` (or build with `--features all-themes`) before declaring a change done — the default build only compiles forest, so theme-gated regressions can hide.
 
 ## Coding rules
 
@@ -64,39 +85,38 @@ These are non-negotiable. Reviewers will reject code that violates them.
 2. **No emojis in code or files** unless explicitly requested.
 3. **No backwards-compat shims for things you're removing.** Just delete.
 4. **No new abstractions beyond what the task requires.** Three similar lines beats a premature trait.
-5. **No hardcoded hex colors in component code.** Always go through `theme.palette().<role>`. Hardcoded hex in `experiments/src/lib.rs` is fine (that's where palettes live); anywhere else is a bug.
-6. **No branching on theme identity for visual logic.** `if theme == Theme::Cyber` is a code smell. Branch on knobs or palette roles: `if theme.knobs().scanline { ... }`.
+5. **No hardcoded hex colors in component code.** Always go through `theme.palette().<role>`. Hardcoded hex in theme palette definitions is fine (that's where palettes live); anywhere else is a bug.
+6. **No branching on theme identity for visual logic.** `if theme == Theme::Forest` is a code smell. Branch on knobs or palette roles: `if theme.knobs().scanline { ... }`. Branching on theme for non-visual structural choices (e.g., border type) is tolerable but prefer knobs when possible.
 7. **No `unwrap()` on user-reachable code paths.** OK in `main` setup and prototype glue; not OK in render loops.
 8. **Match Rust idioms.** snake_case for fns/vars, PascalCase for types, SCREAMING for consts. `cargo fmt` before committing.
 9. **Concrete types over generics** when only one concrete type is used. Example: `Terminal<CrosstermBackend<io::Stdout>>` not `Terminal<B: Backend>`.
+10. **No `ono` runtime imports in copy-paste component source.** Component code a user receives must import only the target framework + their own `theme.rs`. The point of Ono is code ownership.
 
 ## Theme rules
 
-See `plan/theming.md` for the full decision. Quick reference:
+Details in `plan/theming.md`. Quick reference:
 
-- **Cyber is canonical.** It's the only theme enabled in default builds. Retro, Minimal, and Forest exist as feature-gated dev tools.
-- **Adding a theme** requires: a new variant in `Theme`, a `Palette` constant, a `Knobs` constant, a `gradient()` arm, a `name()` arm — all behind `#[cfg(feature = "theme-<name>")]`. Update `plan/theming.md`.
+- **Forest is canonical.** It's the only theme built and shipped by default. Retro, Minimal, and Cyber exist as feature-gated dev tools.
+- **Adding a theme** requires: a new variant in `Theme`, a `Palette` constant, a `Knobs` constant, a `gradient()` arm, a `name()` arm — all behind `#[cfg(feature = "theme-<name>")]`.
 - **Every theme must fill all 9 Palette roles and all Knob fields.** No `Option<Color>`. No per-component fallbacks.
-- **Themes are not advertised** as a user feature in v1.0. Public messaging stays single-theme.
+- **Themes are not advertised** as a user-selectable feature in public messaging. Single-theme (forest) story.
+- **`ono add` emits `theme.rs`** into the user's project with concrete hex for the chosen theme. First add writes it; subsequent adds reuse.
 
-## Aesthetic constraints (retro)
+## Aesthetic constraints (forest)
 
-When working on retro components, conform to `plan/aesthetic-decision.md`:
+Details in `plan/aesthetic-decision.md`. Quick reference:
 
-- Palette: only the 6 canonical colors. No new hues.
-- Animation: 30 FPS, 4–6s gradient sweeps, no bounce/elastic easing.
-- Two O's in "ono" = eyes. Keep them visually prominent in hero pieces.
-- Tagline "beautiful terminal UI components" pairs with the wordmark.
+- Palette: only the 9 canonical roles. No new hues without updating `Palette` for every theme.
+- Animation: slow and breathing. No bounce/elastic easing. No scanline on forest.
+- Two O's in "ono" = eyes. Keep them visually prominent in hero pieces. Subtle async pulse.
+- Tagline "beautiful terminal UI components" pairs with the wordmark until the brand is established.
 
-## Phase discipline
+## Release discipline
 
-From `plan/ono-plan.md` — these are hard rules to enforce against future selves:
-
-1. **Don't skip Phase 0.** No infrastructure (specs, engine, CLI, site, codegen) until v0.0.4 ships and the validation post hits its kill criterion.
-2. **Don't announce until v0.1.0.** Repo can be public earlier, but no marketing push until the MVP works.
-3. **Don't ship `ono` as a runtime import in generated code.** Generated component code imports only the target framework + the user's utils.
-4. **Don't let generated code look generated.** When codegen lands (v0.2.0), template output must read as idiomatic. Stop and fix templates if it doesn't.
-5. **Don't force cross-target universality.** Some components are Ratatui-only, some Textual-only. That's fine. Don't bend specs to make every component everywhere.
+- **Don't announce a release until it ships.** Repo can be public earlier; marketing waits for working code.
+- **Don't ship `ono` as a runtime import in copied code.** Component source imports only the target framework + the user's own files.
+- **Don't let generated code look generated.** When codegen lands, template output must read as idiomatic. Stop and fix templates if it doesn't.
+- **Don't force cross-target universality.** Some components are Ratatui-only, some Textual-only. Document divergence honestly.
 
 ## Adding work
 
@@ -104,12 +124,19 @@ From `plan/ono-plan.md` — these are hard rules to enforce against future selve
 1. Create `experiments/src/bin/<name>.rs`.
 2. Use `Theme::parse_from_args()` to read `--theme`.
 3. Pull colors from `theme.palette()`, behavior from `theme.knobs()`.
-4. Conform to cyber for default appearance; verify retro + minimal + forest don't crash with `just all-themes`.
+4. Conform to forest for default appearance; verify retro + minimal + cyber don't crash with `just all-themes`.
 5. No new shared abstractions in `lib.rs` unless every existing experiment needs them.
 
+**A new element or component in the real crate:**
+1. Draft the spec: `specs/elements/<name>.toml` or `specs/components/<name>.toml`.
+2. Hand-write the Ratatui source under `ono/src/elements/` or `ono/src/components/`.
+3. Register in the component catalog.
+4. Ensure it uses palette roles (not hex) and no `ono` runtime imports.
+5. Verify `ono list` shows it; `ono preview <name>` renders it; `ono add <name>` copies a clean file.
+
 **A new theme (rare — see `plan/theming.md` first):**
-1. Add `theme-<name>` to `experiments/Cargo.toml` `[features]`.
-2. Add the `Theme` variant + `Palette` const + `Knobs` const + match arms in `lib.rs`, all `#[cfg]`-gated.
+1. Add `theme-<name>` to the relevant `Cargo.toml` `[features]`.
+2. Add the `Theme` variant + `Palette` const + `Knobs` const + match arms, all `#[cfg]`-gated.
 3. Add `SPINNER_<NAME>` if needed.
 4. Update `plan/theming.md` with the rationale.
 
@@ -120,18 +147,17 @@ From `plan/ono-plan.md` — these are hard rules to enforce against future selve
 - `just check` passes (with `all-themes`).
 - `cargo build --workspace --release` passes (default features).
 - For UI changes: actually run the binary in a real terminal. Type-check passes ≠ visual correctness. If you can't run it (no TTY), say so explicitly — don't claim success.
-- For new themes: run all three experiments under that theme. None should panic.
+- For new themes: run every experiment/component under that theme. None should panic.
 
 ## What NOT to do
 
 - Don't create `*.md` planning docs outside `plan/` without asking.
 - Don't add dependencies without checking if the existing ones cover the need.
-- Don't introduce `clap` or any CLI parser to experiments (`std::env::args()` is enough; the real CLI is a Phase 1 concern).
-- Don't add `tokio` or async runtimes. Phase 0 is sync only.
+- Don't introduce `clap` to experiments (`std::env::args()` is enough). The real CLI in `ono/` can use clap.
+- Don't add `tokio` or async runtimes. Rendering is sync.
 - Don't run `cargo update` casually — it churns `Cargo.lock`. Update deliberately, in its own commit.
-- Don't write a CHANGELOG yet. That starts at v0.1.0.
 - Don't push to `main` of `github.com/nullorder/ono` without explicit human ask.
-- Don't post anything publicly on the project's behalf. Validation posts go through Ani.
+- Don't post anything publicly on the project's behalf. Release posts go through Ani.
 
 ## When in doubt
 

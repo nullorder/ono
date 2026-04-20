@@ -4,7 +4,7 @@ Beautiful terminal UI components — copy-paste, framework-agnostic, code you ow
 
 ## Status
 
-This is a name-reservation placeholder. The real CLI ships in **v0.1.0**.
+This is a name-reservation placeholder. The real CLI is in active development.
 
 If you found this on crates.io, you're early. Star or watch the repo to follow along:
 

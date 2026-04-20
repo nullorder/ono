@@ -1,0 +1,46 @@
+# Element: progress
+# Horizontal progress bar. Atomic — composes nothing.
+
+[component]
+name = "progress"
+kind = "element"
+description = "Horizontal progress bar with configurable width, fill style, and optional inline percentage."
+targets = ["ratatui"]
+
+[params.percent]
+type = "float"
+range = [0.0, 1.0]
+default = 0.0
+doc = "Fill fraction. 0.0 empty, 1.0 full."
+
+[params.width]
+type = "int"
+min = 1
+default = 20
+doc = "Bar width in cells, excluding any inline percentage readout."
+
+[params.label]
+type = "string"
+default = ""
+doc = "Optional prefix label rendered left of the bar."
+
+[params.show_percent]
+type = "bool"
+default = false
+doc = "If true, append ' NN%' after the bar."
+
+[params.style]
+type = "enum"
+values = ["unicode", "ascii"]
+default = "unicode"
+doc = "unicode uses block glyphs (█▉▊…) and subcell smoothing. ascii uses [==  ]."
+
+# Class → palette role mapping. Components refer to their classes by name; the
+# theme resolves the class to a concrete color via palette().<role>.
+[classes]
+fill  = "primary"
+track = "dim"
+label = "primary"
+pct   = "bright"
+
+# No [compose] — elements are atomic.

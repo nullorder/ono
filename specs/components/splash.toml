@@ -1,0 +1,71 @@
+# Component: splash
+# Animated FIGlet wordmark with gradient sweep, per-eye pulse, optional
+# scanline and idle flicker. Hero piece. Heavily parameterized; tasteful
+# defaults carry the aesthetic.
+
+[component]
+name = "splash"
+kind = "component"
+description = "Animated FIGlet wordmark. Gradient sweep across large text, asynchronous pulse on each O, optional scanline and idle flicker driven by theme knobs."
+targets = ["ratatui"]
+
+[params.text]
+type = "string"
+default = "ono"
+doc = "Wordmark text. Two-letter repeated characters work best for the 'eyes' effect."
+
+[params.figlet_font]
+type = "enum"
+values = ["ansi_shadow", "big", "standard"]
+default = "ansi_shadow"
+doc = "FIGlet font. ansi_shadow renders the cleanest eye shape for O."
+
+[params.tagline]
+type = "string"
+default = "beautiful terminal UI components"
+doc = "Subtitle rendered below the wordmark. Set to empty to suppress."
+
+[params.sweep_secs]
+type = "float"
+default = 5.0
+doc = "Seconds per full gradient cycle. Falls through to theme.knobs().gradient_period_secs when unset."
+
+[params.pulse]
+type = "bool"
+default = true
+doc = "Enable per-eye brightness pulse (async phases on the two O's)."
+
+[params.scanline]
+type = "bool"
+default = true
+doc = "Enable scanline overlay. Effective only when theme.knobs().scanline is also true (forest disables it)."
+
+[params.flicker]
+type = "bool"
+default = true
+doc = "Enable occasional 1-frame dim pulse. Effective only when theme.knobs().idle_flicker is true."
+
+# Hand-tuned animation beats. First-class fields, not a 'custom' escape hatch.
+[animation]
+pulse_left_phase   = 0.0
+pulse_right_phase  = 0.5
+scanline_opacity   = 0.10
+idle_flicker_range = [8.0, 12.0]  # seconds between flickers
+
+# Class → palette role mapping.
+[classes]
+text       = "primary"
+highlight  = "bright"
+accent     = "accent"
+tagline    = "dim"
+scanline   = "bright"
+background = "bg"
+
+# Theme knobs this component reads. Listed for documentation; the engine
+# always has full theme access, but this is the contract for codegen later.
+[theme_knobs]
+uses = ["gradient_period_secs", "pulse_amplitude", "scanline", "scanline_speed_rows_per_sec", "idle_flicker"]
+
+# No [compose] — splash is a hero composite in logic, but does not compose
+# other registered components. Its primitives (FIGlet, gradient, scanline)
+# live in the engine, not the catalog.
