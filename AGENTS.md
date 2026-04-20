@@ -25,7 +25,7 @@ Two top-level concerns in the shipped crate (`ono/src/`):
 
 **Composition rule:** components compose elements and other components. Elements are atomic. Prevents cycles.
 
-**Spec files** (`specs/`) are the source of truth for each component's params, defaults, composition, and class→role mapping. Consumed by the engine for preview and, later, by codegen.
+**Spec files** (`ono/specs/`) are the source of truth for each component's params, defaults, composition, and class→role mapping. Consumed by the engine for preview and, later, by codegen. They live inside the `ono` crate so they ship in the published binary (embedded at compile time).
 
 ## Repo layout
 
@@ -41,9 +41,9 @@ ono/
 │       ├── components/     composite components (Ratatui source)
 │       ├── spec/           TOML parse + composition resolver
 │       └── cli/            subcommand implementations
-├── specs/
-│   ├── elements/*.toml
-│   └── components/*.toml
+│   └── specs/                TOML source of truth (embedded at build time)
+│       ├── elements/*.toml
+│       └── components/*.toml
 ├── experiments/            prototype crate — scratchpad for new work before it graduates into ono/
 │   ├── Cargo.toml
 │   └── src/
@@ -128,7 +128,7 @@ Details in `plan/aesthetic-decision.md`. Quick reference:
 5. No new shared abstractions in `lib.rs` unless every existing experiment needs them.
 
 **A new element or component in the real crate:**
-1. Draft the spec: `specs/elements/<name>.toml` or `specs/components/<name>.toml`.
+1. Draft the spec: `ono/specs/elements/<name>.toml` or `ono/specs/components/<name>.toml`.
 2. Hand-write the Ratatui source under `ono/src/elements/` or `ono/src/components/`.
 3. Register in the component catalog.
 4. Ensure it uses palette roles (not hex) and no `ono` runtime imports.

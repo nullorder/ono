@@ -13,6 +13,26 @@ categories = ["command-line-utilities"]
 homepage = "https://github.com/nullorder/ono"
 documentation = "https://github.com/nullorder/ono"
 
+[features]
+default = []
+theme-retro = []
+theme-minimal = []
+theme-cyber = []
+all-themes = ["theme-retro", "theme-minimal", "theme-cyber"]
+
+[dependencies]
+ratatui.workspace = true
+crossterm.workspace = true
+clap.workspace = true
+serde.workspace = true
+toml.workspace = true
+include_dir.workspace = true
+thiserror.workspace = true
+
+[lib]
+name = "ono"
+path = "src/lib.rs"
+
 [[bin]]
 name = "ono"
 path = "src/main.rs"

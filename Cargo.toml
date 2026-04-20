@@ -17,3 +17,8 @@ repository = "https://github.com/nullorder/ono"
 ratatui = "0.30"
 crossterm = "0.29"
 figlet-rs = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+include_dir = "0.7"
+thiserror = "2"
