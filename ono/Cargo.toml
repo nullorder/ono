@@ -1,17 +1,17 @@
 [package]
 name = "ono"
-version = "0.0.0"
+version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Beautiful terminal UI components — copy-paste, framework-agnostic. Placeholder crate; the real CLI is in active development."
+description = "Beautiful terminal UI components for Ratatui — themeable widgets with an eject-to-source CLI."
 readme = "README.md"
-keywords = ["tui", "terminal", "ratatui", "components", "cli"]
-categories = ["command-line-utilities"]
+keywords = ["tui", "terminal", "ratatui", "components", "widgets"]
+categories = ["command-line-interface", "command-line-utilities"]
 homepage = "https://github.com/nullorder/ono"
-documentation = "https://github.com/nullorder/ono"
+documentation = "https://docs.rs/ono"
 
 [features]
 default = []

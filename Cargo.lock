@@ -895,7 +895,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "ono"
-version = "0.0.0"
+version = "0.0.5"
 dependencies = [
  "clap",
  "crossterm",
@@ -1145,6 +1145,15 @@ dependencies = [
  "crossterm",
  "instability",
  "ratatui-core",
+]
+
+[[package]]
+name = "ratatui-demo"
+version = "0.0.5"
+dependencies = [
+ "crossterm",
+ "figlet-rs",
+ "ratatui",
 ]
 
 [[package]]

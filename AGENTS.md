@@ -4,9 +4,14 @@ Working notes for AI coding agents (Claude Code, Cursor, Pi, etc.) contributing 
 
 ## What Ono is
 
-A framework-agnostic registry of beautiful, copy-paste terminal UI components. Think shadcn / Aceternity, but for TUIs. Users run a CLI, pick a component, get idiomatic source dropped into their project — code they own, not a runtime dependency.
+A framework-agnostic library of beautiful terminal UI components. Think shadcn / Aceternity, but for TUIs.
 
-**Status:** early work in progress. No public CLI yet.
+Two usage modes, both first-class:
+
+- **Library (default):** `cargo add ono`, `use ono::components::splash::Splash;`. Themeable Ratatui widgets driven by typed builders.
+- **Eject (power path):** `ono add <name>` copies the component's source into the user's tree. Use when the typed params aren't enough and you want to rewrite rendering. Ejected code has no runtime dependency on `ono`.
+
+**Status:** early work in progress. No public release yet.
 
 ## Authoritative context
 
@@ -90,7 +95,7 @@ These are non-negotiable. Reviewers will reject code that violates them.
 7. **No `unwrap()` on user-reachable code paths.** OK in `main` setup and prototype glue; not OK in render loops.
 8. **Match Rust idioms.** snake_case for fns/vars, PascalCase for types, SCREAMING for consts. `cargo fmt` before committing.
 9. **Concrete types over generics** when only one concrete type is used. Example: `Terminal<CrosstermBackend<io::Stdout>>` not `Terminal<B: Backend>`.
-10. **No `ono` runtime imports in copy-paste component source.** Component code a user receives must import only the target framework + their own `theme.rs`. The point of Ono is code ownership.
+10. **Component source must work identically in library mode and eject mode.** Use relative `super::super::theme::...` imports so the same `.rs` file compiles both in the `ono` crate (library users) and under a vendored `src/ono/` tree (eject users). Do not `use ono::...` inside `ono/src/components/` or `ono/src/elements/` — that would break the eject path. Library users get the components via `use ono::components::...` externally; that's fine.
 
 ## Theme rules
 
@@ -114,7 +119,7 @@ Details in `plan/aesthetic-decision.md`. Quick reference:
 ## Release discipline
 
 - **Don't announce a release until it ships.** Repo can be public earlier; marketing waits for working code.
-- **Don't ship `ono` as a runtime import in copied code.** Component source imports only the target framework + the user's own files.
+- **Ejected code must not import from `ono`.** Component source imports only the target framework and the user's own `theme.rs`. Library users get the same files via `use ono::components::...` — that's the library path and it's fine. Don't conflate the two.
 - **Don't let generated code look generated.** When codegen lands, template output must read as idiomatic. Stop and fix templates if it doesn't.
 - **Don't force cross-target universality.** Some components are Ratatui-only, some Textual-only. Document divergence honestly.
 
@@ -131,7 +136,7 @@ Details in `plan/aesthetic-decision.md`. Quick reference:
 1. Draft the spec: `ono/specs/elements/<name>.toml` or `ono/specs/components/<name>.toml`.
 2. Hand-write the Ratatui source under `ono/src/elements/` or `ono/src/components/`.
 3. Register in the component catalog.
-4. Ensure it uses palette roles (not hex) and no `ono` runtime imports.
+4. Ensure it uses palette roles (not hex) and relative `super::super::theme` imports (so the same file compiles both under the `ono` crate and under an ejected `src/ono/` tree — no `use ono::...` inside the component file).
 5. Verify `ono list` shows it; `ono preview <name>` renders it; `ono add <name>` copies a clean file.
 
 **A new theme (rare — see `plan/theming.md` first):**

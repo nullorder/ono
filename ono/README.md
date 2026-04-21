@@ -1,20 +1,45 @@
 # ono
 
-Beautiful terminal UI components — copy-paste, framework-agnostic, code you own.
+Beautiful terminal UI components for Ratatui. Use as a library, or eject the source into your tree.
 
-## Status
+> Early work in progress. This is a name-reservation placeholder on crates.io — v0.1.0 is the first real release.
 
-This is a name-reservation placeholder. The real CLI is in active development.
+## Library usage (default)
 
-If you found this on crates.io, you're early. Star or watch the repo to follow along:
+```toml
+[dependencies]
+ono = "0.1"
+ratatui = "0.30"
+```
 
-https://github.com/nullorder/ono
+```rust
+use ono::components::boot::Boot;
+use ono::theme::Theme;
 
-## What this will do (eventually)
+let theme = Theme::Forest;
+// in your render loop:
+Boot::new(theme.palette(), theme.knobs())
+    .elapsed(elapsed)
+    .render(area, buf);
+```
 
-Run a CLI, pick a TUI component from a curated registry, get idiomatic source code dropped into your project. No runtime dependency, no magic imports — you own the code.
+Components are Ratatui widgets parameterized by typed builders and a `Theme` (palette + animation knobs). Covered by semver from v0.1.0: everything under `ono::components`, `ono::elements`, `ono::theme`.
 
-Eventual framework targets: **Ratatui** (Rust), **Textual** (Python), **Bubble Tea** (Go), **Ink** (Node). One source spec per component, idiomatic generators per framework.
+## CLI usage (helper)
+
+```sh
+cargo install ono
+ono list                    # browse the catalog
+ono preview dashboard       # render live in your terminal
+ono add splash              # eject source into ./src/ono/ (no runtime dep on ono after this)
+```
+
+`ono add` is the power-user eject path — use it when you want to rewrite rendering logic beyond what builder params allow. Ejected code imports only Ratatui and your own `theme.rs`.
+
+## More
+
+- Homepage + source: <https://github.com/nullorder/ono>
+- Other framework targets coming: Textual, Bubble Tea, Ink.
 
 ## License
 

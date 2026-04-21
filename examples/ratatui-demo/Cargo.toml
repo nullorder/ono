@@ -1,0 +1,14 @@
+[package]
+name = "ratatui-demo"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+description = "Example of what a user's crate looks like after `ono add splash boot dashboard statusbar`."
+
+[dependencies]
+ratatui.workspace = true
+crossterm.workspace = true
+figlet-rs.workspace = true

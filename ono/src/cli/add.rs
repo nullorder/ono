@@ -158,7 +158,10 @@ fn write_root_mod_rs(root: &Path) -> io::Result<()> {
     if root.join("components").is_dir() {
         mods.push("components");
     }
-    let mut body = String::new();
+    // Components ship with the full builder surface. A freshly vendored tree
+    // won't exercise every knob on day one; allow dead code across the whole
+    // `src/ono/` subtree so users don't see a wall of warnings.
+    let mut body = String::from("#![allow(dead_code)]\n\n");
     for m in &mods {
         body.push_str(&format!("pub mod {m};\n"));
     }
