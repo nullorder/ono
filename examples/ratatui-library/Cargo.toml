@@ -1,0 +1,15 @@
+[package]
+name = "ratatui-library"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+description = "Example of using `ono` as a library dependency — no eject, components imported from the crate."
+
+[dependencies]
+ono = { path = "../../ono" }
+ratatui.workspace = true
+crossterm.workspace = true
+figlet-rs.workspace = true

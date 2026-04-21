@@ -1157,6 +1157,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ratatui-library"
+version = "0.0.5"
+dependencies = [
+ "crossterm",
+ "figlet-rs",
+ "ono",
+ "ratatui",
+]
+
+[[package]]
 name = "ratatui-macros"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

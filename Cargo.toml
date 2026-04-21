@@ -4,6 +4,7 @@ members = [
     "ono",
     "experiments",
     "examples/ratatui-demo",
+    "examples/ratatui-library",
 ]
 
 [workspace.package]
