@@ -1,0 +1,43 @@
+# Component: dashboard
+# Command-center style monitoring view. Stat tiles, a throughput
+# sparkline, a service list, region load bars, resource gauges, and an
+# event log in a bordered frame. Stateful — caller constructs a state
+# object and advances it with tick(now).
+
+[component]
+name = "dashboard"
+kind = "component"
+description = "Command-center dashboard. Stat tiles, throughput sparkline, services, regions, resource gauges, and an event log."
+targets = ["ratatui"]
+
+[params.title]
+type = "string"
+default = "ono"
+doc = "Top-left title in the outer frame."
+
+[params.subtitle]
+type = "string"
+default = "command center"
+doc = "Subtitle rendered beside the title."
+
+[params.border_type]
+type = "enum"
+values = ["plain", "rounded", "double", "thick"]
+default = "rounded"
+doc = "Outer frame border style."
+
+[classes]
+frame     = "border"
+title     = "bright"
+subtitle  = "dim"
+value     = "bright"
+label     = "dim"
+healthy   = "bright"
+warn      = "accent"
+error     = "warn"
+accent    = "accent"
+spark     = "accent"
+gauge_bg  = "border"
+
+[theme_knobs]
+uses = ["gauge_unicode"]

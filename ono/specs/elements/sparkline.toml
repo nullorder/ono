@@ -1,0 +1,22 @@
+# Element: sparkline
+# Unicode block-glyph mini-chart from a raw value buffer.
+
+[component]
+name = "sparkline"
+kind = "element"
+description = "Unicode block-glyph mini-chart. Normalizes the input buffer to its own min/max, so callers pass raw values."
+targets = ["ratatui"]
+
+[params.values]
+type = "string"
+default = ""
+doc = "Handle to a caller-owned &[f32]. At the source level this is a slice reference, not a literal."
+
+[params.width]
+type = "int"
+min = 1
+default = 0
+doc = "Width in cells. 0 (default) means 'use the full area width'."
+
+[classes]
+line = "primary"

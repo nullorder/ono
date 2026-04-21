@@ -1,0 +1,23 @@
+# Element: percentage
+# Inline percentage readout.
+
+[component]
+name = "percentage"
+kind = "element"
+description = "Inline percentage readout. Pair with progress or render standalone."
+targets = ["ratatui"]
+
+[params.value]
+type = "float"
+range = [0.0, 1.0]
+default = 0.0
+doc = "Value to display, expressed as a fraction. Rendered as value * 100."
+
+[params.decimals]
+type = "int"
+min = 0
+default = 0
+doc = "Number of digits after the decimal point. Capped at 4."
+
+[classes]
+text = "bright"

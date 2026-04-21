@@ -438,7 +438,7 @@ dependencies = [
 
 [[package]]
 name = "experiments"
-version = "0.0.1"
+version = "0.0.5"
 dependencies = [
  "crossterm",
  "figlet-rs",
@@ -899,6 +899,7 @@ version = "0.0.0"
 dependencies = [
  "clap",
  "crossterm",
+ "figlet-rs",
  "include_dir",
  "ratatui",
  "serde",

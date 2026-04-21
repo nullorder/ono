@@ -1,0 +1,26 @@
+# Element: box
+# Bordered panel. Atomic — composes nothing.
+#
+# The Rust module is named `boxed` because `box` is a reserved keyword,
+# but the spec/user-facing name is "box".
+
+[component]
+name = "box"
+kind = "element"
+description = "Bordered panel with optional title. Thin wrapper around ratatui's Block, sourced from palette."
+targets = ["ratatui"]
+
+[params.title]
+type = "string"
+default = ""
+doc = "Optional title rendered in the top border. Empty string suppresses."
+
+[params.borders]
+type = "enum"
+values = ["all", "none", "top", "bottom", "left", "right"]
+default = "all"
+doc = "Which edges draw a border."
+
+[classes]
+frame = "border"
+title = "primary"

@@ -8,12 +8,15 @@ fn catalog() -> Catalog {
 }
 
 #[test]
-fn catalog_loads_three_anchors() {
+fn catalog_loads_full_catalog() {
     let cat = catalog();
-    assert!(cat.get("progress").is_some(), "progress is present");
-    assert!(cat.get("splash").is_some(), "splash is present");
-    assert!(cat.get("statusbar").is_some(), "statusbar is present");
-    assert_eq!(cat.len(), 3);
+    let expected_elements =
+        ["box", "percentage", "progress", "sparkline", "spinner", "typewriter"];
+    let expected_components = ["boot", "dashboard", "map", "splash", "statusbar"];
+    for name in expected_elements.iter().chain(expected_components.iter()) {
+        assert!(cat.get(name).is_some(), "{name} is present");
+    }
+    assert_eq!(cat.len(), expected_elements.len() + expected_components.len());
 }
 
 #[test]
@@ -107,36 +110,10 @@ fn idents_in_pass_extracts_names() {
 }
 
 #[test]
-fn progress_and_splash_validate_clean() {
-    // Validate only specs whose children (if any) are already in the catalog.
-    // `statusbar` composes `spinner` and `percentage`, which will land in the
-    // catalog as part of Workstream C; this test tightens to `anchor_specs_validate_clean`
-    // once those exist.
+fn full_catalog_validates_clean() {
     let cat = catalog();
     let errs = validate_all(&cat);
-    let unrelated: Vec<_> = errs
-        .iter()
-        .filter(|e| {
-            !matches!(e, validate::ValidateError::UnknownChild { child, .. }
-                if child == "spinner" || child == "percentage")
-        })
-        .collect();
-    assert!(unrelated.is_empty(), "unexpected validation errors: {unrelated:?}");
-}
-
-#[test]
-fn validation_flags_missing_children() {
-    let cat = catalog();
-    let errs = validate_all(&cat);
-    let missing: Vec<_> = errs
-        .iter()
-        .filter_map(|e| match e {
-            validate::ValidateError::UnknownChild { child, .. } => Some(child.clone()),
-            _ => None,
-        })
-        .collect();
-    assert!(missing.contains(&"spinner".to_string()));
-    assert!(missing.contains(&"percentage".to_string()));
+    assert!(errs.is_empty(), "unexpected validation errors: {errs:?}");
 }
 
 #[test]

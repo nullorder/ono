@@ -1,0 +1,37 @@
+# Element: typewriter
+# Progressive text reveal with optional blinking cursor.
+
+[component]
+name = "typewriter"
+kind = "element"
+description = "Progressive text reveal driven by a caller-supplied progress fraction. Optional blinking cursor."
+targets = ["ratatui"]
+
+[params.text]
+type = "string"
+default = ""
+doc = "Full text to reveal. Characters are counted in Unicode scalars."
+
+[params.progress]
+type = "float"
+range = [0.0, 1.0]
+default = 1.0
+doc = "Fraction of text revealed. 0.0 hides everything; 1.0 shows all."
+
+[params.cursor]
+type = "bool"
+default = true
+doc = "Draw a trailing cursor block while revealing (and when blink-on after done)."
+
+[params.cursor_blink_tick]
+type = "int"
+min = 0
+default = 0
+doc = "Caller-owned tick for cursor blink phase. On when tick % 2 == 0."
+
+[classes]
+text   = "primary"
+cursor = "bright"
+
+[theme_knobs]
+uses = ["cursor_blink_hz"]

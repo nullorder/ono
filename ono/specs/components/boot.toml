@@ -1,0 +1,44 @@
+# Component: boot
+# Animated boot log. Typewriter-revealed steps with a trailing spinner on
+# the active step. Pure function of elapsed time — caller owns the clock.
+
+[component]
+name = "boot"
+kind = "component"
+description = "Animated boot log. Each step reveals character-by-character, spinner runs during pending time, the list loops after an idle pause."
+targets = ["ratatui"]
+
+[params.header]
+type = "string"
+default = "› booting ono"
+doc = "Header line rendered above the step list."
+
+[params.footer]
+type = "string"
+default = "q to quit"
+doc = "Footer line rendered below the step list."
+
+[params.intro_ms]
+type = "int"
+min = 0
+default = 600
+doc = "Blank-before-first-step dwell in milliseconds."
+
+[params.idle_pause_ms]
+type = "int"
+min = 0
+default = 3200
+doc = "Idle dwell after the final step before the cycle loops."
+
+[classes]
+header  = "bright"
+prefix  = "dim"
+label   = "primary"
+ok      = "bright"
+warn    = "accent"
+spinner = "bright"
+cursor  = "bright"
+footer  = "dim"
+
+[theme_knobs]
+uses = ["reveal_ms_per_char", "spinner", "cursor_blink_hz"]

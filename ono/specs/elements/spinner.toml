@@ -1,0 +1,26 @@
+# Element: spinner
+# Stateless spinner glyph. Caller advances `tick` each frame.
+
+[component]
+name = "spinner"
+kind = "element"
+description = "Stateless spinner glyph driven by a caller-owned tick. Theme selects the glyph set."
+targets = ["ratatui"]
+
+[params.tick]
+type = "int"
+min = 0
+default = 0
+doc = "Frame counter. The spinner renders frames[tick % frames.len()]."
+
+[params.label]
+type = "string"
+default = ""
+doc = "Optional label rendered to the right of the spinner glyph."
+
+[classes]
+glyph = "accent"
+label = "primary"
+
+[theme_knobs]
+uses = ["spinner"]

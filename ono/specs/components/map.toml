@@ -1,0 +1,38 @@
+# Component: map
+# Animated global traffic map. Ratatui canvas with a world map, fixed
+# city list, routes between them, and short traces riding the routes.
+# Stateful — caller advances with tick(now).
+
+[component]
+name = "map"
+kind = "component"
+description = "Animated global traffic map. Canvas-rendered world map with cities, routes, and live packet traces."
+targets = ["ratatui"]
+
+[params.title]
+type = "string"
+default = "ono"
+doc = "Top-left title in the outer frame."
+
+[params.subtitle]
+type = "string"
+default = "global traffic"
+doc = "Subtitle rendered beside the title."
+
+[params.border_type]
+type = "enum"
+values = ["plain", "rounded", "double", "thick"]
+default = "rounded"
+doc = "Outer frame border style."
+
+[classes]
+frame    = "border"
+title    = "bright"
+subtitle = "dim"
+land     = "border"
+route    = "dim"
+city     = "primary"
+pulse    = "bright"
+trace    = "accent"
+label    = "dim"
+stat     = "bright"
