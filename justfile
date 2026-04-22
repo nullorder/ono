@@ -28,6 +28,16 @@ check:
 format:
     cargo fmt --all
 
+# Override the port with `just docs 8080` if 4590 is taken.
+# Build rustdoc for `ono` and serve it locally. Ctrl-C to stop.
+docs PORT='4590':
+    cargo doc -p ono --features all-themes --no-deps
+    @echo ""
+    @echo "→ http://localhost:{{ PORT }}/ono/"
+    @echo "  (Ctrl-C to stop)"
+    @echo ""
+    python3 -m http.server {{ PORT }} -d target/doc --bind 127.0.0.1
+
 # Dry-run a publish: shows what would go to crates.io without uploading
 publish-check CRATE:
     cargo publish -p {{ CRATE }} --dry-run

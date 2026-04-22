@@ -2,11 +2,14 @@
 //! project.
 //!
 //! Destination layout:
-//!   ./src/ono/elements/<name>.rs
-//!   ./src/ono/components/<name>.rs
-//!   ./src/ono/theme.rs      (generated on first add, reused after)
-//!   ./src/ono/mod.rs        (touched so `pub mod elements/components/theme;`
-//!                            always reflects what's on disk)
+//!
+//! ```text
+//! ./src/ono/elements/<name>.rs
+//! ./src/ono/components/<name>.rs
+//! ./src/ono/theme.rs      (generated on first add, reused after)
+//! ./src/ono/mod.rs        (touched so `pub mod elements/components/theme;`
+//!                          always reflects what's on disk)
+//! ```
 //!
 //! v0.1.0 is file-copy: the source `.rs` files from this crate ship verbatim
 //! into the user's tree. Codegen-from-spec is v0.2.0.

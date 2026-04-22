@@ -55,6 +55,14 @@
 //! The public surface covered by semver is everything under [`theme`],
 //! [`elements`], and [`components`]. The CLI (`cli`) and spec engine
 //! (internal) are not semver-stable.
+//!
+//! # Narrative docs
+//!
+//! Rustdoc covers the API; the repo's `docs/` directory covers the
+//! conceptual side — getting started, theming guide, component catalog,
+//! eject guide.
+//!
+//! <https://github.com/nullorder/ono/tree/main/docs>
 
 #![warn(missing_docs)]
 

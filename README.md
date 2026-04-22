@@ -79,6 +79,17 @@ just theme boot cyber
 
 Ratatui is the first target. Textual, Bubble Tea, and Ink are on the way.
 
+## Documentation
+
+Narrative docs in [`docs/`](./docs/):
+
+- [Getting started](./docs/getting-started.md) — five-minute library walkthrough.
+- [Theming](./docs/theming.md) — palette roles, knobs, writing a custom theme.
+- [Components](./docs/components.md) — catalog with a snippet per widget.
+- [Ejecting](./docs/eject.md) — when to use `ono add`, and the tradeoffs.
+
+Reference rustdoc lands on [docs.rs/ono](https://docs.rs/ono) once v0.1.0 publishes.
+
 ## License
 
 [MIT](./LICENSE) — NullOrder.
