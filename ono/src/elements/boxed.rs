@@ -14,6 +14,19 @@ use ratatui::widgets::{Block, Borders, Widget};
 
 use super::super::theme::Palette;
 
+/// Bordered panel with an optional title.
+///
+/// ```no_run
+/// use ono::elements::boxed::BoxFrame;
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 40, 6));
+/// # let area = buf.area;
+///
+/// let palette = Theme::Forest.palette();
+/// BoxFrame::new(palette).title("metrics").render(area, &mut buf);
+/// ```
 pub struct BoxFrame<'a> {
     title: Option<&'a str>,
     borders: Borders,
@@ -21,6 +34,7 @@ pub struct BoxFrame<'a> {
 }
 
 impl<'a> BoxFrame<'a> {
+    /// Construct a fully-bordered box with no title.
     pub fn new(palette: &'a Palette) -> Self {
         Self {
             title: None,
@@ -29,11 +43,13 @@ impl<'a> BoxFrame<'a> {
         }
     }
 
+    /// Set the title rendered into the top border.
     pub fn title(mut self, title: &'a str) -> Self {
         self.title = Some(title);
         self
     }
 
+    /// Restrict which sides render a border (default `Borders::ALL`).
     pub fn borders(mut self, borders: Borders) -> Self {
         self.borders = borders;
         self

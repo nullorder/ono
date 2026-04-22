@@ -13,6 +13,24 @@ use super::super::theme::Palette;
 
 const LEVELS: &[char] = &[' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
 
+/// Block-glyph mini-chart. The caller passes a slice of values; auto-scaling
+/// to the min/max of the visible window happens here.
+///
+/// When more values are provided than cells are available, the trailing
+/// window is shown (newest data on the right).
+///
+/// ```no_run
+/// use ono::elements::sparkline::Sparkline;
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 20, 1));
+/// # let area = buf.area;
+///
+/// let palette = Theme::Forest.palette();
+/// let samples: Vec<f32> = (0..40).map(|i| (i as f32 * 0.3).sin()).collect();
+/// Sparkline::new(&samples, palette).width(20).render(area, &mut buf);
+/// ```
 pub struct Sparkline<'a> {
     values: &'a [f32],
     width: Option<u16>,
@@ -20,6 +38,7 @@ pub struct Sparkline<'a> {
 }
 
 impl<'a> Sparkline<'a> {
+    /// Construct a sparkline. Values are auto-scaled at render time.
     pub fn new(values: &'a [f32], palette: &'a Palette) -> Self {
         Self {
             values,
@@ -28,6 +47,7 @@ impl<'a> Sparkline<'a> {
         }
     }
 
+    /// Fix the render width in cells. Defaults to the available area width.
     pub fn width(mut self, width: u16) -> Self {
         self.width = Some(width.max(1));
         self

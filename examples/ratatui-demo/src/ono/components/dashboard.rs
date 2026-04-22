@@ -23,7 +23,7 @@ const EVENT_BUFFER: usize = 6;
 const REGION_BAR_STEPS: &[char] = &[' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
 
 #[derive(Clone, Copy)]
-pub enum EventKind {
+pub(crate) enum EventKind {
     Ok,
     Warn,
     Info,
@@ -87,6 +87,8 @@ const REGION_DEFS: &[(&str, f32)] = &[
     ("au", 0.52),
 ];
 
+/// Mutable animation state for [`Dashboard`]. Call [`DashboardState::tick`]
+/// each frame to advance the simulated metrics and event log.
 pub struct DashboardState {
     spark: VecDeque<u64>,
     events: VecDeque<EventEntry>,
@@ -98,6 +100,7 @@ pub struct DashboardState {
 }
 
 impl DashboardState {
+    /// Initialize state with `now` as the clock base.
     pub fn new(now: Instant) -> Self {
         let mut spark = VecDeque::with_capacity(SPARK_LEN);
         for _ in 0..SPARK_LEN {
@@ -129,6 +132,8 @@ impl DashboardState {
         }
     }
 
+    /// Advance metrics, services, and the event log to `now`. Call once per
+    /// frame before rendering.
     pub fn tick(&mut self, now: Instant) {
         let t = now.duration_since(self.clock_base).as_secs_f32();
         let base = (t * 1.3).sin() * 0.5 + 0.5;
@@ -177,6 +182,28 @@ fn format_clock(d: Duration) -> String {
     format!("{:02}:{:02}:{:02}", h, m, s)
 }
 
+/// Composite hero dashboard: stat tiles, service table, region bars, event
+/// log, and sparkline, all driven by a [`DashboardState`].
+///
+/// ```no_run
+/// use std::time::Instant;
+/// use ono::components::dashboard::{Dashboard, DashboardState};
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 100, 30));
+/// # let area = buf.area;
+///
+/// let theme = Theme::Forest;
+/// let now = Instant::now();
+/// let mut state = DashboardState::new(now);
+/// state.tick(now);
+///
+/// Dashboard::new(&state, now, theme.palette(), theme.knobs())
+///     .title("my-app")
+///     .subtitle("staging")
+///     .render(area, &mut buf);
+/// ```
 pub struct Dashboard<'a> {
     state: &'a DashboardState,
     now: Instant,
@@ -188,6 +215,7 @@ pub struct Dashboard<'a> {
 }
 
 impl<'a> Dashboard<'a> {
+    /// Construct a dashboard view over `state`. `now` is the frame timestamp.
     pub fn new(
         state: &'a DashboardState,
         now: Instant,
@@ -205,16 +233,19 @@ impl<'a> Dashboard<'a> {
         }
     }
 
+    /// Title rendered top-left of the outer border.
     pub fn title(mut self, title: &'a str) -> Self {
         self.title = title;
         self
     }
 
+    /// Subtitle rendered after `·` next to the title.
     pub fn subtitle(mut self, subtitle: &'a str) -> Self {
         self.subtitle = subtitle;
         self
     }
 
+    /// Outer border style (default `BorderType::Rounded`).
     pub fn border_type(mut self, bt: BorderType) -> Self {
         self.border_type = bt;
         self

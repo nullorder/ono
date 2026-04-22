@@ -12,6 +12,26 @@ use ratatui::widgets::Widget;
 
 use super::super::theme::Palette;
 
+/// Progressive text reveal, one scalar at a time, with an optional blinking
+/// caret.
+///
+/// Stateless: the caller drives both the reveal progress and the caret blink.
+///
+/// ```no_run
+/// use ono::elements::typewriter::Typewriter;
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 40, 1));
+/// # let area = buf.area;
+///
+/// let palette = Theme::Forest.palette();
+/// Typewriter::new("boot sequence complete", palette)
+///     .progress(0.5)
+///     .cursor(true)
+///     .cursor_blink(3)
+///     .render(area, &mut buf);
+/// ```
 pub struct Typewriter<'a> {
     text: &'a str,
     progress: f32,
@@ -21,6 +41,7 @@ pub struct Typewriter<'a> {
 }
 
 impl<'a> Typewriter<'a> {
+    /// Construct a typewriter. Defaults: fully revealed, caret on.
     pub fn new(text: &'a str, palette: &'a Palette) -> Self {
         Self {
             text,
@@ -31,18 +52,21 @@ impl<'a> Typewriter<'a> {
         }
     }
 
-    /// Fraction of the text to reveal, 0.0..=1.0. Counted in Unicode scalars.
+    /// Fraction of the text to reveal (0.0..=1.0, clamped). Counted in Unicode
+    /// scalars.
     pub fn progress(mut self, progress: f32) -> Self {
         self.progress = progress.clamp(0.0, 1.0);
         self
     }
 
+    /// Show or hide the trailing caret.
     pub fn cursor(mut self, cursor: bool) -> Self {
         self.cursor = cursor;
         self
     }
 
-    /// Caller-owned tick for cursor-blink phase (on when `tick % 2 == 0`).
+    /// Caller-owned tick for caret-blink phase (caret is shown when
+    /// `tick % 2 == 0`, or always while the reveal is still in progress).
     pub fn cursor_blink(mut self, tick: u64) -> Self {
         self.cursor_blink_tick = tick;
         self

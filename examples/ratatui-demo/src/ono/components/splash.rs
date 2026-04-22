@@ -29,6 +29,11 @@ struct Cell {
     glyph_idx: usize,
 }
 
+/// Pre-computed FIGlet grid used by [`Splash`]. Build once, render every
+/// frame — FIGlet conversion is non-trivial and does not need to repeat.
+///
+/// The first two `'o'` characters (if any) are tracked as "eye" glyphs, which
+/// [`Splash`] pulses out of phase to animate the wordmark's face.
 pub struct Banner {
     grid: Vec<Vec<Option<Cell>>>,
     width: usize,
@@ -39,6 +44,9 @@ pub struct Banner {
 impl Banner {
     /// Build a banner grid from `text` using `font`. FIGlet conversion is
     /// non-trivial — construct once and reuse across frames.
+    ///
+    /// # Panics
+    /// Panics if the supplied FIGlet font cannot render a character in `text`.
     pub fn from_text(text: &str, font: &FIGlet) -> Self {
         let mut glyph_lines: Vec<Vec<String>> = text
             .chars()
@@ -89,10 +97,12 @@ impl Banner {
         Self { grid, width: total_width, height, eye_glyphs }
     }
 
+    /// Grid width in cells.
     pub fn width(&self) -> u16 {
         self.width as u16
     }
 
+    /// Grid height in rows.
     pub fn height(&self) -> u16 {
         self.height as u16
     }
@@ -108,6 +118,28 @@ fn trim_blank_rows(mut lines: Vec<String>) -> Vec<String> {
     lines
 }
 
+/// Animated FIGlet wordmark with gradient sweep, optional per-eye pulse,
+/// scanline, and idle flicker.
+///
+/// ```no_run
+/// use std::time::Duration;
+/// use figlet_rs::FIGlet;
+/// use ono::components::splash::{Banner, Splash};
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 80, 16));
+/// # let area = buf.area;
+///
+/// let theme = Theme::Forest;
+/// let font = FIGlet::standard().unwrap();
+/// let banner = Banner::from_text("ono", &font);
+///
+/// Splash::new(&banner, theme.palette(), theme.knobs())
+///     .tagline("beautiful terminal UI components")
+///     .elapsed(Duration::from_millis(1200))
+///     .render(area, &mut buf);
+/// ```
 pub struct Splash<'a> {
     banner: &'a Banner,
     tagline: &'a str,
@@ -120,6 +152,9 @@ pub struct Splash<'a> {
 }
 
 impl<'a> Splash<'a> {
+    /// Construct a splash over a pre-built [`Banner`]. Defaults enable pulse,
+    /// scanline, and flicker; the tagline is `"beautiful terminal UI
+    /// components"`.
     pub fn new(banner: &'a Banner, palette: &'a Palette, knobs: &'a Knobs) -> Self {
         Self {
             banner,
@@ -133,26 +168,32 @@ impl<'a> Splash<'a> {
         }
     }
 
+    /// Replace the line under the wordmark. Pass `""` to hide it.
     pub fn tagline(mut self, tagline: &'a str) -> Self {
         self.tagline = tagline;
         self
     }
 
+    /// Toggle the per-eye pulse animation.
     pub fn pulse(mut self, pulse: bool) -> Self {
         self.pulse = pulse;
         self
     }
 
+    /// Toggle the rolling scanline (only drawn when `knobs.scanline` is true).
     pub fn scanline(mut self, scanline: bool) -> Self {
         self.scanline = scanline;
         self
     }
 
+    /// Toggle the idle dim-flicker (only drawn when `knobs.idle_flicker` is true).
     pub fn flicker(mut self, flicker: bool) -> Self {
         self.flicker = flicker;
         self
     }
 
+    /// Monotonic clock driving the animation. Typically
+    /// `Instant::now().duration_since(start)`.
     pub fn elapsed(mut self, elapsed: Duration) -> Self {
         self.elapsed = elapsed;
         self
@@ -179,7 +220,7 @@ impl<'a> Splash<'a> {
         let period = knobs.gradient_period_secs.max(0.5);
         let width = banner.width.max(1) as f32;
 
-        let g_start = color_rgb(palette.accent2);
+        let g_start = color_rgb(palette.secondary);
         let g_mid = color_rgb(palette.primary);
         let g_end = color_rgb(palette.bright);
 

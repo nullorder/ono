@@ -11,12 +11,35 @@ use ratatui::widgets::Widget;
 
 use super::super::theme::Palette;
 
+/// Rendering style for [`Progress`]. Defaults to [`ProgressStyle::Unicode`].
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum ProgressStyle {
+    /// Eighth-block glyphs for smooth sub-cell fills.
     Unicode,
+    /// `[== ]` form for terminals without block-character support.
     Ascii,
 }
 
+/// Horizontal progress bar.
+///
+/// The input percent is clamped to `0.0..=1.0`.
+///
+/// ```no_run
+/// use ono::elements::progress::{Progress, ProgressStyle};
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 40, 1));
+/// # let area = buf.area;
+///
+/// let palette = Theme::Forest.palette();
+/// Progress::new(0.42, palette)
+///     .width(30)
+///     .label("install")
+///     .show_percent(true)
+///     .style(ProgressStyle::Unicode)
+///     .render(area, &mut buf);
+/// ```
 pub struct Progress<'a> {
     percent: f32,
     width: u16,
@@ -27,6 +50,7 @@ pub struct Progress<'a> {
 }
 
 impl<'a> Progress<'a> {
+    /// Construct a progress bar. `percent` is clamped to `0.0..=1.0`.
     pub fn new(percent: f32, palette: &'a Palette) -> Self {
         Self {
             percent: percent.clamp(0.0, 1.0),
@@ -38,21 +62,25 @@ impl<'a> Progress<'a> {
         }
     }
 
+    /// Total width in cells, including the bar track (default 20).
     pub fn width(mut self, width: u16) -> Self {
         self.width = width.max(1);
         self
     }
 
+    /// Label shown before the bar.
     pub fn label(mut self, label: &'a str) -> Self {
         self.label = Some(label);
         self
     }
 
+    /// Append a right-aligned `  42%` readout after the bar.
     pub fn show_percent(mut self, show: bool) -> Self {
         self.show_percent = show;
         self
     }
 
+    /// Choose Unicode block-glyph or ASCII rendering.
     pub fn style(mut self, style: ProgressStyle) -> Self {
         self.style = style;
         self

@@ -14,19 +14,27 @@ use ratatui::widgets::{Paragraph, Widget};
 
 use super::super::theme::{Knobs, Palette};
 
+/// Terminal marker for a completed [`Step`].
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum StepOutcome {
+    /// Green `[ok]` marker.
     Ok,
+    /// Amber `[!!]` marker.
     Warn,
 }
 
+/// A single line in the boot log.
 #[derive(Clone, Copy, Debug)]
 pub struct Step {
+    /// Text revealed with the typewriter effect.
     pub label: &'static str,
+    /// Milliseconds the spinner runs after reveal completes.
     pub pending_ms: u64,
+    /// Outcome marker drawn once the step is finished.
     pub outcome: StepOutcome,
 }
 
+/// Default list of steps, used when no custom sequence is supplied.
 pub const DEFAULT_STEPS: &[Step] = &[
     Step { label: "resolving package registry", pending_ms: 380, outcome: StepOutcome::Ok },
     Step { label: "fetching manifest · ono@0.0.4", pending_ms: 240, outcome: StepOutcome::Ok },
@@ -37,6 +45,25 @@ pub const DEFAULT_STEPS: &[Step] = &[
     Step { label: "rendering catalog · 14 components ready", pending_ms: 200, outcome: StepOutcome::Ok },
 ];
 
+/// Animated boot log. Steps reveal with a typewriter effect, then a spinner
+/// runs for `pending_ms`, then an outcome marker is drawn. After the final
+/// step the whole sequence pauses for `idle_pause_ms` and loops.
+///
+/// ```no_run
+/// use std::time::Duration;
+/// use ono::components::boot::Boot;
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 60, 12));
+/// # let area = buf.area;
+///
+/// let theme = Theme::Forest;
+/// Boot::new(theme.palette(), theme.knobs())
+///     .header("> booting my-app")
+///     .elapsed(Duration::from_millis(2400))
+///     .render(area, &mut buf);
+/// ```
 pub struct Boot<'a> {
     header: &'a str,
     footer: &'a str,
@@ -49,6 +76,8 @@ pub struct Boot<'a> {
 }
 
 impl<'a> Boot<'a> {
+    /// Construct a boot log with defaults. Use the builder to override before
+    /// rendering; required state is just the `elapsed` clock.
     pub fn new(palette: &'a Palette, knobs: &'a Knobs) -> Self {
         Self {
             header: "› booting ono",
@@ -62,31 +91,39 @@ impl<'a> Boot<'a> {
         }
     }
 
+    /// First line in the log (drawn before any step). Default `"› booting ono"`.
     pub fn header(mut self, header: &'a str) -> Self {
         self.header = header;
         self
     }
 
+    /// Last line, drawn after all steps. Default `"q to quit"`.
     pub fn footer(mut self, footer: &'a str) -> Self {
         self.footer = footer;
         self
     }
 
+    /// Override the default step sequence.
     pub fn steps(mut self, steps: &'a [Step]) -> Self {
         self.steps = steps;
         self
     }
 
+    /// Monotonically-increasing clock driving the animation. Typically
+    /// `Instant::now().duration_since(start)`.
     pub fn elapsed(mut self, elapsed: Duration) -> Self {
         self.elapsed = elapsed;
         self
     }
 
+    /// Delay in milliseconds before the first step reveal begins (default 600).
     pub fn intro_ms(mut self, ms: u64) -> Self {
         self.intro_ms = ms;
         self
     }
 
+    /// Delay in milliseconds after the last step before the sequence loops
+    /// (default 3200).
     pub fn idle_pause_ms(mut self, ms: u64) -> Self {
         self.idle_pause_ms = ms;
         self

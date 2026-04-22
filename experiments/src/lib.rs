@@ -19,7 +19,7 @@ pub struct Palette {
     pub primary: Color,
     pub bright: Color,
     pub accent: Color,
-    pub accent2: Color,
+    pub secondary: Color,
     pub warn: Color,
 }
 
@@ -59,7 +59,7 @@ const PALETTE_RETRO: Palette = Palette {
     primary: Color::Rgb(0xE8, 0x9A, 0x00),
     bright: Color::Rgb(0xFF, 0xB8, 0x1C),
     accent: Color::Rgb(0xE0, 0x5A, 0x00),
-    accent2: Color::Rgb(0xE0, 0x5A, 0x00),
+    secondary: Color::Rgb(0xE0, 0x5A, 0x00),
     warn: Color::Rgb(0xE0, 0x5A, 0x00),
 };
 
@@ -72,7 +72,7 @@ const PALETTE_MINIMAL: Palette = Palette {
     primary: Color::Rgb(0xB8, 0xB8, 0xC0),
     bright: Color::Rgb(0xD8, 0xD8, 0xDE),
     accent: Color::Rgb(0x6B, 0x4A, 0xE8),
-    accent2: Color::Rgb(0x6B, 0x4A, 0xE8),
+    secondary: Color::Rgb(0x6B, 0x4A, 0xE8),
     warn: Color::Rgb(0xD6, 0x88, 0x0A),
 };
 
@@ -85,7 +85,7 @@ const PALETTE_CYBER: Palette = Palette {
     primary: Color::Rgb(0xB8, 0xB8, 0xD8),
     bright: Color::Rgb(0xE8, 0x1E, 0x74),
     accent: Color::Rgb(0x00, 0xC8, 0xE0),
-    accent2: Color::Rgb(0xE8, 0x1E, 0x74),
+    secondary: Color::Rgb(0xE8, 0x1E, 0x74),
     warn: Color::Rgb(0xE0, 0x00, 0x2A),
 };
 
@@ -97,7 +97,7 @@ const PALETTE_FOREST: Palette = Palette {
     primary: Color::Rgb(0x6F, 0xA8, 0x5E),
     bright: Color::Rgb(0xB6, 0xE0, 0x7A),
     accent: Color::Rgb(0xD8, 0xA7, 0x3A),
-    accent2: Color::Rgb(0x3E, 0x8A, 0x5A),
+    secondary: Color::Rgb(0x3E, 0x8A, 0x5A),
     warn: Color::Rgb(0xC8, 0x6A, 0x1E),
 };
 

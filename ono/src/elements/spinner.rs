@@ -13,10 +13,29 @@ use ratatui::widgets::Widget;
 
 use super::super::theme::Palette;
 
-pub const SPINNER_DOTS: &[char] = &['◐', '◓', '◑', '◒'];
-pub const SPINNER_BRAILLE: &[char] = &['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-pub const SPINNER_MINIMAL: &[char] = &['·', '◦', '○', '◦'];
+const DEFAULT_FRAMES: &[char] = &['◐', '◓', '◑', '◒'];
 
+/// Single-cell animated spinner with optional trailing label.
+///
+/// Stateless: advance `tick` each frame and re-render. The theme-canonical
+/// frame set can be pulled from `Theme::knobs().spinner`.
+///
+/// ```no_run
+/// use ono::elements::spinner::Spinner;
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 20, 1));
+/// # let area = buf.area;
+///
+/// let theme = Theme::Forest;
+/// let tick = 7; // caller-owned frame counter
+/// Spinner::new(theme.palette())
+///     .frames(theme.knobs().spinner)
+///     .tick(tick)
+///     .label("loading")
+///     .render(area, &mut buf);
+/// ```
 pub struct Spinner<'a> {
     frames: &'a [char],
     tick: u64,
@@ -25,15 +44,17 @@ pub struct Spinner<'a> {
 }
 
 impl<'a> Spinner<'a> {
+    /// Construct a spinner with the default frame set.
     pub fn new(palette: &'a Palette) -> Self {
         Self {
-            frames: SPINNER_DOTS,
+            frames: DEFAULT_FRAMES,
             tick: 0,
             label: None,
             palette,
         }
     }
 
+    /// Override the frame set. Empty slices are ignored (default is kept).
     pub fn frames(mut self, frames: &'a [char]) -> Self {
         if !frames.is_empty() {
             self.frames = frames;
@@ -41,11 +62,14 @@ impl<'a> Spinner<'a> {
         self
     }
 
+    /// Current frame counter (caller-owned; typically an integer advanced each
+    /// animation tick).
     pub fn tick(mut self, tick: u64) -> Self {
         self.tick = tick;
         self
     }
 
+    /// Label rendered one cell right of the spinner glyph.
     pub fn label(mut self, label: &'a str) -> Self {
         self.label = Some(label);
         self

@@ -3,6 +3,13 @@
 //! The entry point for consumers is [`Catalog::load`]; once loaded, use the
 //! helpers in [`resolve`] to walk deps, [`validate`] to check integrity, and
 //! [`expr`] to evaluate pass-expressions at instantiation time.
+//!
+//! In v0.1.0 most of this module is scaffolding for the v0.2.0 codegen path.
+//! Only `Catalog` / `Kind` are exercised at runtime (by `ono list` and `ono
+//! add`); the rest compiles but isn't reached outside tests. Silencing
+//! dead-code warnings here keeps the audit signal clean without deleting
+//! infrastructure we're about to use.
+#![allow(dead_code, unused_imports)]
 
 pub mod catalog;
 pub mod expr;

@@ -69,6 +69,8 @@ struct Trace {
     duration: Duration,
 }
 
+/// Mutable animation state for [`WorldMap`]. Call [`MapState::tick`] each
+/// frame to spawn new packet traces and drop finished ones.
 pub struct MapState {
     cities: Vec<City>,
     traces: Vec<Trace>,
@@ -79,6 +81,7 @@ pub struct MapState {
 }
 
 impl MapState {
+    /// Initialize state with the current frame's `Instant` as the clock base.
     pub fn new(now: Instant) -> Self {
         let cities = CITIES
             .iter()
@@ -100,6 +103,8 @@ impl MapState {
         }
     }
 
+    /// Advance the simulation to `now`: retire finished traces, maybe spawn new
+    /// ones. Call once per frame before rendering.
     pub fn tick(&mut self, now: Instant) {
         self.traces
             .retain(|t| now.duration_since(t.start) < t.duration);
@@ -151,6 +156,29 @@ fn rgb(c: (u8, u8, u8)) -> Color {
     Color::Rgb(c.0, c.1, c.2)
 }
 
+/// Stylized world map with animated packet traces between cities.
+///
+/// The state is owned by a [`MapState`] that the caller ticks each frame.
+///
+/// ```no_run
+/// use std::time::Instant;
+/// use ono::components::map::{MapState, WorldMap};
+/// use ono::theme::Theme;
+/// use ratatui::widgets::Widget;
+/// # use ratatui::{buffer::Buffer, layout::Rect};
+/// # let mut buf = Buffer::empty(Rect::new(0, 0, 80, 24));
+/// # let area = buf.area;
+///
+/// let palette = Theme::Forest.palette();
+/// let now = Instant::now();
+/// let mut state = MapState::new(now);
+/// state.tick(now);
+///
+/// WorldMap::new(&state, now, palette)
+///     .title("my-app")
+///     .subtitle("traffic")
+///     .render(area, &mut buf);
+/// ```
 pub struct WorldMap<'a> {
     state: &'a MapState,
     now: Instant,
@@ -161,6 +189,8 @@ pub struct WorldMap<'a> {
 }
 
 impl<'a> WorldMap<'a> {
+    /// Construct a world map view. `now` is the current frame's timestamp —
+    /// traces are positioned relative to it.
     pub fn new(state: &'a MapState, now: Instant, palette: &'a Palette) -> Self {
         Self {
             state,
@@ -172,16 +202,19 @@ impl<'a> WorldMap<'a> {
         }
     }
 
+    /// Title rendered in the top-left of the bordered box.
     pub fn title(mut self, title: &'a str) -> Self {
         self.title = title;
         self
     }
 
+    /// Subtitle rendered after `·` next to the title.
     pub fn subtitle(mut self, subtitle: &'a str) -> Self {
         self.subtitle = subtitle;
         self
     }
 
+    /// Override the border style (default `BorderType::Rounded`).
     pub fn border_type(mut self, bt: BorderType) -> Self {
         self.border_type = bt;
         self
