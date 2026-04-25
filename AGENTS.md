@@ -11,7 +11,7 @@ Two usage modes, both first-class:
 - **Library (default):** `cargo add ono`, `use ono::components::splash::Splash;`. Themeable Ratatui widgets driven by typed builders.
 - **Eject (power path):** `ono add <name>` copies the component's source into the user's tree. Use when the typed params aren't enough and you want to rewrite rendering. Ejected code has no runtime dependency on `ono`.
 
-**Status:** early work in progress. No public release yet.
+**Status:** v0.1.0 is the first public release (2026-04-25). Repo is open source (MIT); `plan/` stays gitignored cause it's for personal planning.
 
 ## Authoritative context
 
@@ -101,10 +101,10 @@ These are non-negotiable. Reviewers will reject code that violates them.
 
 Details in `plan/theming.md`. Quick reference:
 
-- **Forest is canonical.** It's the only theme built and shipped by default. Retro, Minimal, and Cyber exist as feature-gated dev tools.
+- **Ono ships multiple themes.** Forest is the default and is always built. Retro, Minimal, and Cyber are feature-gated (`theme-retro`, `theme-minimal`, `theme-cyber`, aggregate `all-themes`) so users only pay for what they use. All four are first-class.
 - **Adding a theme** requires: a new variant in `Theme`, a `Palette` constant, a `Knobs` constant, a `gradient()` arm, a `name()` arm — all behind `#[cfg(feature = "theme-<name>")]`.
 - **Every theme must fill all 9 Palette roles and all Knob fields.** No `Option<Color>`. No per-component fallbacks.
-- **Themes are not advertised** as a user-selectable feature in public messaging. Single-theme (forest) story.
+- **Components must not branch on theme identity for visual logic.** Branch on knob fields or palette roles. A component that only looks right under one theme is leaking palette assumptions.
 - **`ono add` emits `theme.rs`** into the user's project with concrete hex for the chosen theme. First add writes it; subsequent adds reuse.
 
 ## Aesthetic constraints (forest)
@@ -121,7 +121,7 @@ Details in `plan/aesthetic-decision.md`. Quick reference:
 - **Don't announce a release until it ships.** Repo can be public earlier; marketing waits for working code.
 - **Ejected code must not import from `ono`.** Component source imports only the target framework and the user's own `theme.rs`. Library users get the same files via `use ono::components::...` — that's the library path and it's fine. Don't conflate the two.
 - **Don't let generated code look generated.** When codegen lands, template output must read as idiomatic. Stop and fix templates if it doesn't.
-- **Don't force cross-target universality.** Some components are Ratatui-only, some Textual-only. Document divergence honestly.
+- **Don't force cross-target universality.** Today every component targets Ratatui; if/when other targets land, some components will be target-specific. Document divergence honestly rather than faking a lowest-common-denominator abstraction.
 
 ## Adding work
 

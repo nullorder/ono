@@ -11,9 +11,9 @@ themes means swapping those two inputs; no component code changes.
 use ono::theme::{Theme, Palette, Knobs};
 ```
 
-- **`Theme`** — an enum bundling a palette + knobs preset. Always
-  includes `Forest`; the other variants (`Retro`, `Minimal`, `Cyber`) are
-  feature-gated.
+- **`Theme`** — an enum bundling a palette + knobs preset. Forest is
+  the default and always built; `Retro`, `Minimal`, and `Cyber` are
+  enabled via cargo features so unused themes don't bloat the binary.
 - **`Palette`** — nine color roles. Semver-locked at v0.1.0.
 - **`Knobs`** — animation and behavior parameters (gradient period,
   scanline speed, spinner frame set, …).
@@ -49,7 +49,7 @@ struct literals.
 
 | Theme | Feature flag | Character |
 |---|---|---|
-| `Forest` | _(always on)_ | Calm greens, warm gold, slow breathing. Canonical. |
+| `Forest` | _(always on)_ | Calm greens, warm gold, slow breathing. The default. |
 | `Retro` | `theme-retro` | Amber phosphor, scanline on, idle flicker. |
 | `Minimal` | `theme-minimal` | Quiet monochrome with a single violet accent. |
 | `Cyber` | `theme-cyber` | Neon, scanline + glitch on, high contrast. |
@@ -64,10 +64,11 @@ ono = { version = "0.1", features = ["theme-cyber"] }
 ono = { version = "0.1", features = ["all-themes"] }
 ```
 
-The feature-gated themes exist primarily as dev tools — they keep
-component code honest (if a component only looks right under one
-palette, that's a leak). The shipped story is single-theme Forest; other
-themes are not advertised to end users.
+All four themes are first-class — pick whichever fits your UI. The
+feature-gating is purely about binary size: if you only ship Forest,
+you don't pay for the other palettes. Cross-theme support also keeps
+component code honest — if a component only looks right under one
+palette, that's a leak.
 
 ## Knobs
 

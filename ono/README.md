@@ -2,8 +2,6 @@
 
 Beautiful terminal UI components for Ratatui. Use as a library, or eject the source into your tree.
 
-> Early work in progress. This is a name-reservation placeholder on crates.io — v0.1.0 is the first real release.
-
 ## Library usage (default)
 
 ```toml
@@ -41,7 +39,6 @@ ono add splash              # eject source into ./src/ono/ (no runtime dep on on
 - Homepage + source: <https://github.com/nullorder/ono>
 - Narrative docs (getting started, theming, components, ejecting):
   <https://github.com/nullorder/ono/tree/main/docs>
-- Other framework targets coming: Textual, Bubble Tea, Ink.
 
 ## License
 

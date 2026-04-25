@@ -5,9 +5,10 @@
 //! from the palette by role name and never hardcode hex — that's what makes
 //! a single component source file render correctly under every theme.
 //!
-//! Forest is the canonical theme and the only one built by default. Retro,
-//! Minimal, and Cyber are feature-gated (`theme-retro`, `theme-minimal`,
-//! `theme-cyber`, or `all-themes`).
+//! Ono ships four built-in themes — Forest, Retro, Minimal, and Cyber.
+//! Forest is the default and is always built; the others live behind cargo
+//! features (`theme-retro`, `theme-minimal`, `theme-cyber`, or
+//! `all-themes`) so unused palettes don't bloat the binary.
 //!
 //! ```no_run
 //! use ono::theme::Theme;

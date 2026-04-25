@@ -241,15 +241,9 @@ WorldMap::new(&state, now, palette)
 ## Rustdoc
 
 Every public item has rustdoc with a minimal usage example. Browse at
-[docs.rs/ono](https://docs.rs/ono) once v0.1.0 ships, or run locally:
+[docs.rs/ono](https://docs.rs/ono), or run locally:
 
 ```sh
 cargo doc -p ono --open
 ```
 
-## Ratatui target
-
-All components in v0.1.0 target Ratatui. Textual, Bubble Tea, and Ink
-generators ship later — some components may not translate to every
-target. When that happens it's flagged honestly on the per-component
-page rather than faked behind a lowest-common-denominator abstraction.

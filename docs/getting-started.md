@@ -23,9 +23,11 @@ let palette = theme.palette();
 let knobs = theme.knobs();
 ```
 
-Forest is the canonical theme and the only one built by default. See
-[theming](./theming.md) for Retro / Minimal / Cyber and how to write your
-own.
+Forest is the default theme and is always built. Retro, Minimal, and
+Cyber are available behind cargo features (`theme-retro`,
+`theme-minimal`, `theme-cyber`, or `all-themes`). See
+[theming](./theming.md) for the full reference and how to write a
+custom palette.
 
 ## 3. Render a component
 

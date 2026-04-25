@@ -5,11 +5,10 @@ format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 from v0.1.0 onward.
 
-## [Unreleased]
+## [0.1.0] — 2026-04-25
 
-This is the entry that will ship as **v0.1.0** once the release track completes
-(showcase site + recordings + crates.io publish). The library surface and CLI
-behaviour below are what v0.1.0 will lock in.
+First public release. Library surface and CLI behaviour below are the
+semver-locked v0.1.0 contract.
 
 ### Added
 
@@ -19,7 +18,7 @@ behaviour below are what v0.1.0 will lock in.
   - Components: `Boot` (+ `Step`, `StepOutcome`, `DEFAULT_STEPS`),
     `Dashboard` (+ `DashboardState`), `WorldMap` (+ `MapState`),
     `Splash` (+ `Banner`), `Statusbar`.
-- `Theme` enum with canonical `Forest` always built; `Retro`, `Minimal`, and
+- `Theme` enum with `Forest` as the default, always built; `Retro`, `Minimal`, and
   `Cyber` behind `theme-retro` / `theme-minimal` / `theme-cyber` features
   (aggregate `all-themes`).
 - Nine-role `Palette`: `bg`, `surface`, `border`, `dim`, `primary`, `bright`,

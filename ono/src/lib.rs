@@ -37,11 +37,11 @@
 //!
 //! # Themes
 //!
-//! Forest is the canonical theme and the only one built by default. Enable
-//! the `theme-retro`, `theme-minimal`, `theme-cyber`, or `all-themes` cargo
-//! features to unlock the others. Components never branch on theme identity
-//! for visual logic — they pull colors from the palette and behaviour from
-//! the knobs.
+//! Ono ships four built-in themes — Forest, Retro, Minimal, and Cyber.
+//! Forest is the default and is always built; enable the `theme-retro`,
+//! `theme-minimal`, `theme-cyber`, or `all-themes` cargo features to compile
+//! in the others. Components never branch on theme identity for visual logic
+//! — they pull colors from the palette and behaviour from the knobs.
 //!
 //! # Ejecting to source
 //!
