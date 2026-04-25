@@ -39,14 +39,42 @@ docs PORT='4590':
     python3 -m http.server {{ PORT }} -d target/doc --bind 127.0.0.1
 
 # Dry-run a publish: shows what would go to crates.io without uploading
-publish-check CRATE:
-    cargo publish -p {{ CRATE }} --dry-run
+publish-check:
+    cargo publish -p ono --dry-run
 
-# Publish a workspace crate to crates.io. Requires a clean tree on a tagged commit.
-publish CRATE:
-    @git diff --quiet || (echo "tree dirty — commit or stash first" && exit 1)
+# Tag v<workspace-version> and push to origin (idempotent).
+gh-tag:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    git diff --quiet || { echo "tree dirty — commit or stash first"; exit 1; }
+    VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed -E 's/version = "(.+)"/\1/')
+    TAG="v$VERSION"
+    if git rev-parse "$TAG" >/dev/null 2>&1; then
+        echo "tag $TAG already exists locally"
+    else
+        git tag -a "$TAG" -m "Release $TAG"
+        echo "tagged $TAG"
+    fi
+    git push origin "$TAG"
+
+# Cut a GitHub release for the current version (prompts for title).
+gh-publish:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed -E 's/version = "(.+)"/\1/')
+    TAG="v$VERSION"
+    printf "Release title (default: %s): " "$TAG" > /dev/tty
+    read -r TITLE < /dev/tty
+    TITLE="${TITLE:-$TAG}"
+    gh release create "$TAG" --title "$TITLE" --generate-notes
+
+# Upload ono to crates.io (5s abort window after dry-run).
+crate-publish:
     @git describe --exact-match --tags HEAD >/dev/null 2>&1 || (echo "HEAD is not on a tag" && exit 1)
-    cargo publish -p {{ CRATE }} --dry-run
-    @echo "dry-run ok. publishing {{ CRATE }} in 5s — ctrl-c to abort."
+    cargo publish -p ono --dry-run
+    @echo "dry-run ok. publishing ono in 5s — ctrl-c to abort."
     @sleep 5
-    cargo publish -p {{ CRATE }}
+    cargo publish -p ono
+
+# Full release flow: tag, crates.io, GitHub release.
+publish: gh-tag crate-publish gh-publish
