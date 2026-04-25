@@ -1,6 +1,14 @@
 # Ono
 
-Beautiful terminal UI components for Ratatui. Themeable widgets you can use as a library or eject into your tree as plain source.
+[![Crates.io](https://img.shields.io/crates/v/ono.svg)](https://crates.io/crates/ono)
+[![Docs.rs](https://img.shields.io/docsrs/ono)](https://docs.rs/ono)
+[![Lib.rs](https://img.shields.io/badge/lib.rs-ono-blue?logo=rust)](https://lib.rs/crates/ono)
+[![License: MIT](https://img.shields.io/crates/l/ono.svg)](./LICENSE)
+[![MSRV](https://img.shields.io/badge/rustc-1.85%2B-blue.svg)](https://www.rust-lang.org/)
+[![Downloads](https://img.shields.io/crates/d/ono.svg)](https://crates.io/crates/ono)
+[![Open Source](https://img.shields.io/badge/open%20source-%E2%9D%A4-red)](https://github.com/nullorder/ono)
+
+Beautiful terminal UI components for [Ratatui](https://github.com/ratatui/ratatui). Themeable widgets you can use as a library or eject into your tree as plain source.
 
 The shipped Rust crate lives at [`ono/`](./ono/) — see [`ono/README.md`](./ono/README.md) for install + usage, or [crates.io/crates/ono](https://crates.io/crates/ono).
 
