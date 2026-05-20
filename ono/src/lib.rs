@@ -58,11 +58,10 @@
 //!
 //! # Narrative docs
 //!
-//! Rustdoc covers the API; the repo's `docs/` directory covers the
-//! conceptual side — getting started, theming guide, component catalog,
-//! eject guide.
+//! Rustdoc covers the API; the project site covers the conceptual side —
+//! getting started, theming guide, component catalog, eject guide.
 //!
-//! <https://github.com/nullorder/ono/tree/main/docs>
+//! <https://ono.nullorder.dev>
 
 #![warn(missing_docs)]
 

@@ -6,6 +6,7 @@ experiment NAME:
     cargo experiments {{ NAME }}
 
 # Run an experiment in a specific theme (forest|retro|minimal|cyber)
+
 # Non-forest themes are gated behind cargo features.
 theme NAME THEME:
     @if [ "{{ THEME }}" = "forest" ]; then \
@@ -28,15 +29,36 @@ check:
 format:
     cargo fmt --all
 
-# Override the port with `just docs 8080` if 4590 is taken.
+# Override the port with `just rustdoc 8080` if 4590 is taken.
+
 # Build rustdoc for `ono` and serve it locally. Ctrl-C to stop.
-docs PORT='4590':
+rustdoc PORT='4590':
     cargo doc -p ono --features all-themes --no-deps
     @echo ""
     @echo "→ http://localhost:{{ PORT }}/ono/"
     @echo "  (Ctrl-C to stop)"
     @echo ""
     python3 -m http.server {{ PORT }} -d target/doc --bind 127.0.0.1
+
+# Install or refresh docs/ site dependencies (pnpm).
+docs-install:
+    pnpm --dir docs install
+
+# Run the Starlight dev server at docs/ (hot reload). Ctrl-C to stop.
+docs:
+    pnpm --dir docs dev
+
+# Build the Starlight site to docs/dist/.
+docs-build:
+    pnpm --dir docs build
+
+# Preview the production build of the site (run docs-build first).
+docs-preview:
+    pnpm --dir docs preview
+
+# Remove the docs/ build artifacts (dist + .astro cache).
+docs-clean:
+    rm -rf docs/dist docs/.astro
 
 # Dry-run a publish: shows what would go to crates.io without uploading
 publish-check:

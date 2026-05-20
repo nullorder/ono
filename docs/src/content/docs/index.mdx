@@ -1,0 +1,71 @@
+---
+title: Ono
+description: Beautiful terminal UI components for Ratatui.
+template: splash
+hero:
+  tagline: Themeable Ratatui widgets you can use as a library, or eject into your tree as plain source.
+  actions:
+    - text: Get started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/nullorder/ono
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Two ways to use it
+
+<CardGrid>
+  <Card title="Library mode (default)" icon="rocket">
+    `cargo add ono`, `use ono::components::splash::Splash;`. Drop themeable
+    widgets into an existing Ratatui app like any other `Widget`.
+  </Card>
+  <Card title="Eject mode (power path)" icon="document">
+    `ono add <name>` copies the component's source into your tree. No runtime
+    dependency on `ono` after that — rewrite rendering however you want.
+  </Card>
+  <Card title="Themed by default" icon="sun">
+    Nine palette roles plus animation knobs. Four built-in themes (Forest,
+    Retro, Minimal, Cyber); Forest is the default. Custom themes are just a
+    `Palette` + `Knobs` you construct.
+  </Card>
+  <Card title="Semver-stable" icon="approve-check">
+    Everything under `ono::theme`, `ono::elements`, and `ono::components` is
+    covered by semver from v0.1.0. The API surface is locked.
+  </Card>
+</CardGrid>
+
+## Quick start
+
+```toml
+# Cargo.toml
+[dependencies]
+ono = "0.1"
+ratatui = "0.30"
+```
+
+```rust
+use ono::components::splash::{Banner, Splash};
+use ono::theme::Theme;
+use ratatui::widgets::Widget;
+use figlet_rs::FIGlet;
+use std::time::Duration;
+
+let theme = Theme::Forest;
+let font = FIGlet::standard().unwrap();
+let banner = Banner::from_text("my-app", &font);
+
+Splash::new(&banner, theme.palette(), theme.knobs())
+    .elapsed(Duration::from_millis(1200))
+    .render(area, buf);
+```
+
+Head to [Getting started](/getting-started/) for the full walkthrough, or jump straight to the [Components catalog](/components/).
+
+## API reference
+
+Rustdoc on every public item: [docs.rs/ono](https://docs.rs/ono).

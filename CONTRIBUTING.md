@@ -39,7 +39,7 @@ To add another:
 3. Every theme must fill **all 9 palette roles and all knob fields**. No `Option<Color>`. No per-component fallbacks.
 4. Verify every experiment and component renders under the new theme: `just all-themes`.
 
-Users who need a one-off look should write a custom `Palette` + `Knobs` in their own code rather than land it upstream — see [theming docs](./docs/theming.md). Upstream new themes when the look is broadly useful and the palette holds up across the full component catalog.
+Users who need a one-off look should write a custom `Palette` + `Knobs` in their own code rather than land it upstream — see [theming docs](https://ono.nullorder.dev/theming/). Upstream new themes when the look is broadly useful and the palette holds up across the full component catalog.
 
 ## Submitting a change
 

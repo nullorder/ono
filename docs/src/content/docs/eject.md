@@ -1,4 +1,7 @@
-# Ejecting to source
+---
+title: Ejecting to source
+description: When to use ono add, how the dual-tree design works, and the tradeoffs vs staying on the library.
+---
 
 `ono add <name>` copies a component's source into your project. After
 running it, your app imports the component from **your own tree**, not
@@ -134,9 +137,9 @@ use ono::theme::Theme;
 
 ## Working examples
 
-- [`examples/ratatui-library/`](../examples/ratatui-library/) — library
+- [`examples/ratatui-library/`](https://github.com/nullorder/ono/tree/main/examples/ratatui-library) — library
   mode, no `src/ono/` tree.
-- [`examples/ratatui-demo/`](../examples/ratatui-demo/) — eject mode,
+- [`examples/ratatui-demo/`](https://github.com/nullorder/ono/tree/main/examples/ratatui-demo) — eject mode,
   runs the exact same scenes from a vendored `src/ono/` tree.
 
 The two examples render **the same components**; only the integration

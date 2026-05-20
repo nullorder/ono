@@ -56,7 +56,7 @@ ono/
 │       └── bin/            one binary per prototype
 ├── examples/
 │   └── ratatui-demo/       example project consuming several components
-├── site/                   Astro showcase
+├── docs/                   Astro Starlight site (narrative docs + showcase, deploys to ono.nullorder.dev)
 ├── plan/                   internal planning (gitignored) — follow along there
 ├── .cargo/config.toml      `cargo experiments <name>` alias
 ├── justfile                dev recipes
@@ -76,11 +76,27 @@ just experiments                # list available
 just all-themes                 # build with every theme enabled
 just check                      # cargo check --workspace --features all-themes
 just format                     # cargo fmt --all
+just rustdoc [PORT]             # build + serve the ono crate's rustdoc (was `just docs`)
 
 cargo experiments <name>        # raw alias, same as `just experiment`
 ```
 
 Always `just check` (or build with `--features all-themes`) before declaring a change done — the default build only compiles forest, so theme-gated regressions can hide.
+
+### Docs site (`docs/`, Astro Starlight)
+
+The narrative docs + showcase site lives at `docs/` and deploys to `ono.nullorder.dev`. **Use Node 24 and pnpm — both are pinned and required.** Node version is set by `docs/.nvmrc` (`24`); the `packageManager` field in `docs/package.json` pins pnpm. Do not use npm or yarn against this directory — `pnpm-lock.yaml` is the only committed lockfile.
+
+```sh
+nvm use                         # picks up docs/.nvmrc → Node 24
+just docs-install               # pnpm install in docs/
+just docs                       # dev server (hot reload)
+just docs-build                 # production build → docs/dist/
+just docs-preview               # serve the production build
+just docs-clean                 # rm -rf docs/dist docs/.astro
+```
+
+Bumping Astro / Starlight / sharp is allowed; bumping the pinned Node major or swapping package managers needs an explicit reason in the commit message.
 
 ## Coding rules
 

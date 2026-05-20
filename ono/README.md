@@ -36,9 +36,8 @@ ono add splash              # eject source into ./src/ono/ (no runtime dep on on
 
 ## More
 
-- Homepage + source: <https://github.com/nullorder/ono>
-- Narrative docs (getting started, theming, components, ejecting):
-  <https://github.com/nullorder/ono/tree/main/docs>
+- Homepage + docs: <https://ono.nullorder.dev>
+- Source: <https://github.com/nullorder/ono>
 
 ## License
 

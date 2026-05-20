@@ -24,12 +24,14 @@ The shipped Rust crate lives at [`ono/`](./ono/) — see [`ono/README.md`](./ono
 
 ## Documentation
 
-- [Getting started](./docs/getting-started.md) — five-minute walkthrough.
-- [Theming](./docs/theming.md) — palette roles, knobs, custom themes.
-- [Components](./docs/components.md) — catalog with a snippet per widget.
-- [Ejecting](./docs/eject.md) — when to use the eject path, and the tradeoffs.
+Full site: **[ono.nullorder.dev](https://ono.nullorder.dev)**.
 
-API reference: [docs.rs/ono](https://docs.rs/ono).
+- [Getting started](https://ono.nullorder.dev/getting-started/) — five-minute walkthrough.
+- [Theming](https://ono.nullorder.dev/theming/) — palette roles, knobs, custom themes.
+- [Components](https://ono.nullorder.dev/components/) — catalog with a snippet per widget.
+- [Ejecting](https://ono.nullorder.dev/eject/) — when to use the eject path, and the tradeoffs.
+
+API reference: [docs.rs/ono](https://docs.rs/ono). Site source lives under [`docs/`](./docs/) (Astro Starlight).
 
 ## Contributing
 

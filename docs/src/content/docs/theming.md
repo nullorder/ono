@@ -1,4 +1,7 @@
-# Theming
+---
+title: Theming
+description: Palette roles, animation knobs, the four built-in themes, and how to write a custom one.
+---
 
 Themes are a first-class architectural primitive, not decoration. Every
 component pulls its colors from a `Palette` and its animation behavior
@@ -164,7 +167,7 @@ constant, and the role-lookup table.
 - You own it. Recoloring is just editing hex values in a struct literal.
 - It has no runtime dependency on the `ono` crate.
 
-See [ejecting](./eject.md) for the full picture.
+See [ejecting](/eject/) for the full picture.
 
 ## Rules
 

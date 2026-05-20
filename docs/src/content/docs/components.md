@@ -1,22 +1,27 @@
-# Components catalog
+---
+title: Components catalog
+description: Every widget the library ships, grouped by tier, with a minimal usage snippet for each.
+---
 
 Every widget the library ships, grouped by tier.
 
-> **Heads up — screenshots / recordings are not yet inline on this page.**
-> Visual captures land on the deferred *recordings* track alongside the
-> showcase site. Until then, the fastest way to see a component is:
->
-> ```sh
-> cargo install ono
-> ono preview <name>   # q / Esc / Ctrl+C to exit
-> ```
->
-> Or run a working example locally:
->
-> ```sh
-> cargo run -p ratatui-library   # library integration
-> cargo run -p ratatui-demo      # eject-mode integration
-> ```
+:::note
+Screenshots / recordings are not yet inline on this page. Visual
+captures land on the deferred *recordings* track. Until then, the
+fastest way to see a component is:
+
+```sh
+cargo install ono
+ono preview <name>   # q / Esc / Ctrl+C to exit
+```
+
+Or run a working example locally:
+
+```sh
+cargo run -p ratatui-library   # library integration
+cargo run -p ratatui-demo      # eject-mode integration
+```
+:::
 
 Every snippet below assumes:
 
@@ -246,4 +251,3 @@ Every public item has rustdoc with a minimal usage example. Browse at
 ```sh
 cargo doc -p ono --open
 ```
-

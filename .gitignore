@@ -2,7 +2,7 @@
 target/
 **/*.rs.bk
 
-# Node (future site/)
+# Node (docs/ Astro Starlight site)
 node_modules/
 dist/
 .next/

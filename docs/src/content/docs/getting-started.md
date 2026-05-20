@@ -1,4 +1,7 @@
-# Getting started
+---
+title: Getting started
+description: Five-minute walkthrough — add ono to a Ratatui app and render your first component.
+---
 
 Five-minute walkthrough: add `ono` to a Ratatui app and render your first
 component.
@@ -26,7 +29,7 @@ let knobs = theme.knobs();
 Forest is the default theme and is always built. Retro, Minimal, and
 Cyber are available behind cargo features (`theme-retro`,
 `theme-minimal`, `theme-cyber`, or `all-themes`). See
-[theming](./theming.md) for the full reference and how to write a
+[theming](/theming/) for the full reference and how to write a
 custom palette.
 
 ## 3. Render a component
@@ -94,8 +97,8 @@ loop {
 ## 5. Run a complete example
 
 A working boot → splash → dashboard app lives at
-[`examples/ratatui-library/`](../examples/ratatui-library/). Clone the
-repo and:
+[`examples/ratatui-library/`](https://github.com/nullorder/ono/tree/main/examples/ratatui-library).
+Clone the repo and:
 
 ```sh
 cargo run -p ratatui-library
@@ -105,8 +108,8 @@ Press `q`, `Esc`, or `Ctrl+C` to exit.
 
 ## Where to go next
 
-- [Theming](./theming.md) — palette roles, knobs, writing a custom theme.
-- [Components](./components.md) — catalog of every element and component
+- [Theming](/theming/) — palette roles, knobs, writing a custom theme.
+- [Components](/components/) — catalog of every element and component
   with usage snippets.
-- [Ejecting](./eject.md) — when (and why) to copy component source into
+- [Ejecting](/eject/) — when (and why) to copy component source into
   your tree with `ono add`.
